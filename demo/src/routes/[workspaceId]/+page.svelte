@@ -41,7 +41,7 @@
 
 			// Load robotics rooms
 			try {
-				roboticsClient = new robotics.RoboticsClientCore('http://localhost:8000');
+				roboticsClient = new robotics.RoboticsClientCore('https://blanchon-robothub-transportserver.hf.space/api');
 				roboticsRooms = await roboticsClient.listRooms(workspaceId);
 			} catch (err) {
 				roboticsError = 'Failed to load robotics rooms';
@@ -50,7 +50,7 @@
 
 			// Load video rooms
 			try {
-				videoClient = new video.VideoClientCore('http://localhost:8000');
+				videoClient = new video.VideoClientCore('https://blanchon-robothub-transportserver.hf.space/api');
 				videoRooms = await videoClient.listRooms(workspaceId);
 			} catch (err) {
 				videoError = 'Failed to load video rooms';

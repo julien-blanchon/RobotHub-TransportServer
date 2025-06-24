@@ -98,7 +98,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new robotics.RoboticsProducer('http://localhost:8000');
+			producer = new robotics.RoboticsProducer('https://blanchon-robothub-transportserver.hf.space/api');
 
 			producer.onConnected(() => {
 				connected = true;
@@ -138,7 +138,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new robotics.RoboticsProducer('http://localhost:8000');
+			producer = new robotics.RoboticsProducer('https://blanchon-robothub-transportserver.hf.space/api');
 
 			producer.onConnected(() => {
 				connected = true;

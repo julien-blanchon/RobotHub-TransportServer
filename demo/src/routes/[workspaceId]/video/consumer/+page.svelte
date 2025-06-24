@@ -78,7 +78,7 @@
 			connecting = true;
 			error = '';
 
-			consumer = new video.VideoConsumer('http://localhost:8000');
+			consumer = new video.VideoConsumer('https://blanchon-robothub-transportserver.hf.space/api');
 
 			// Set up event handlers
 			consumer.onConnected(() => {

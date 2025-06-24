@@ -42,11 +42,11 @@
 		try {
 			loading = true;
 			error = '';
-			client = new video.VideoClientCore('http://localhost:8000');
+			client = new video.VideoClientCore('https://blanchon-robothub-transportserver.hf.space/api');
 			rooms = await client.listRooms(workspaceId);
 			debugInfo.responseTime = Date.now() - startTime;
 		} catch (err) {
-			error = "Failed to connect to server. Make sure it's running on http://localhost:8000";
+			error = "Failed to connect to server. Make sure it's running on https://blanchon-robothub-transportserver.hf.space/api";
 			console.error('Failed to load video rooms:', err);
 			debugInfo.responseTime = Date.now() - startTime;
 		} finally {

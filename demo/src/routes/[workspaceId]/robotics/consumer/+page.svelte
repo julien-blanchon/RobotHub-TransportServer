@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
 	import type { robotics as roboticsTypes } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -70,7 +72,11 @@
 			connecting = true;
 			error = '';
 
+<<<<<<< HEAD
 			consumer = new robotics.RoboticsConsumer('https://blanchon-robothub-transportserver.hf.space/api');
+=======
+			consumer = new robotics.RoboticsConsumer(settings.transportServerUrl);
+>>>>>>> ccb03a313c3f3278e408a849294738a50b7ec4d0
 
 			// Set up event handlers
 			consumer.onConnected(() => {

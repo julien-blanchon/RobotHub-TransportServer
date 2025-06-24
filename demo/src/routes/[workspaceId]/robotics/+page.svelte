@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
 	import type { robotics as roboticsTypes } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -42,7 +43,11 @@
 		try {
 			loading = true;
 			error = '';
+<<<<<<< HEAD
 			client = new robotics.RoboticsClientCore('https://blanchon-robothub-transportserver.hf.space/api');
+=======
+			client = new robotics.RoboticsClientCore(settings.transportServerUrl);
+>>>>>>> ccb03a313c3f3278e408a849294738a50b7ec4d0
 			rooms = await client.listRooms(workspaceId);
 			debugInfo.responseTime = Date.now() - startTime;
 		} catch (err) {

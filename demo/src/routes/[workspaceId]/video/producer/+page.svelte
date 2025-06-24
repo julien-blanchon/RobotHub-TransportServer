@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
 	

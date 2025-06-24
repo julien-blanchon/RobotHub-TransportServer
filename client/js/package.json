@@ -1,0 +1,75 @@
+{
+  "name": "@robohub/transport-server-client",
+  "version": "1.0.0",
+  "description": "Modular TypeScript client library for LeRobot Arena - video streaming, robotics control, and sensor data",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./video": {
+      "import": "./dist/video.js",
+      "types": "./dist/video.d.ts"
+    },
+    "./robotics": {
+      "import": "./dist/robotics.js", 
+      "types": "./dist/robotics.d.ts"
+    },
+    "./audio": {
+      "import": "./dist/audio.js",
+      "types": "./dist/audio.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun --format esm --sourcemap && bun build src/video.ts --outdir dist --target bun --format esm --sourcemap && bun build src/robotics.ts --outdir dist --target bun --format esm --sourcemap && bun build src/audio.ts --outdir dist --target bun --format esm --sourcemap && bunx tsc --emitDeclarationOnly --declaration --outDir dist",
+    "dev": "bun --watch src/index.ts", 
+    "test": "bun test",
+    "lint": "bun run eslint src --ext ts,tsx",
+    "lint:fix": "bun run eslint src --ext ts,tsx --fix",
+    "typecheck": "bun run tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prebuild": "bun run clean"
+  },
+  "keywords": [
+    "lerobot",
+    "arena", 
+    "webrtc",
+    "video-streaming",
+    "robotics",
+    "real-time",
+    "typescript",
+    "client-library"
+  ],
+  "author": "LeRobot Arena Team",
+  "license": "MIT",
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.15",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julien-blanchon/RoboHub.git#main:services/transport-server/client/js",
+    "directory": "services/transport-server/client/js"
+  },
+  "bugs": {
+    "url": "https://github.com/julien-blanchon/RoboHub.git#main:services/transport-server/client/js"
+  },
+  "homepage": "https://github.com/julien-blanchon/RoboHub.git#main:services/transport-server/client/js",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "private": true
+}

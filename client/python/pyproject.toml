@@ -1,0 +1,28 @@
+[project]
+name = "robohub-transport-server-client"
+version = "1.0.0"
+description = "Python client for RoboHub transport server"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiohttp>=3.9.0",
+    "websockets>=15.0.1",
+    # Video client dependencies
+    "aiortc>=1.9.0",
+    "opencv-python>=4.10.0",
+    "numpy>=1.26.0",
+    "av>=13.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/transport_server_client"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

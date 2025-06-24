@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# Node modules and build artifacts
+node_modules
+.svelte-kit
+demo/build
+demo/node_modules
+client/js/node_modules
+client/js/dist
+
+# Python cache and virtual environments
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv
+.pytest_cache
+*.egg-info
+
+# Development files
+*.log
+logs/
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation
+*.md
+!README.md
+
+# Test files
+tests/
+test_*
+
+# Development configs
+.eslintrc*
+.prettierrc*
+*.config.js
+!svelte.config.js
+!vite.config.ts 

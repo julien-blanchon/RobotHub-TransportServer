@@ -1,0 +1,22 @@
+[project]
+name = "robohub-transport-server"
+version = "1.0.0"
+description = "RoboHub transport server"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.13",
+    "opencv-python-headless>=4.11.0.86",
+    "pydantic>=2.11.7",
+    "uvicorn[standard]>=0.34.3",
+    "av>=14.4.0",
+    "aiortc>=1.6.0",
+    "numpy>=2.3.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.2.1",
+]

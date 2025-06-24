@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: lerobot_arena_server
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.115.12
+Requires-Dist: opencv-python>=4.11.0.86
+Requires-Dist: pydantic>=2.11.5
+Requires-Dist: uvicorn[standard]>=0.34.3

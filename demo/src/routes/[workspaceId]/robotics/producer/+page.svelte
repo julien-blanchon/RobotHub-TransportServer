@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
 	
@@ -100,11 +99,7 @@
 			connecting = true;
 			error = '';
 
-<<<<<<< HEAD
 			producer = new robotics.RoboticsProducer('https://blanchon-robothub-transportserver.hf.space/api');
-=======
-			producer = new robotics.RoboticsProducer(settings.transportServerUrl);
->>>>>>> ccb03a313c3f3278e408a849294738a50b7ec4d0
 
 			producer.onConnected(() => {
 				connected = true;
@@ -144,11 +139,7 @@
 			connecting = true;
 			error = '';
 
-<<<<<<< HEAD
 			producer = new robotics.RoboticsProducer('https://blanchon-robothub-transportserver.hf.space/api');
-=======
-			producer = new robotics.RoboticsProducer(settings.transportServerUrl);
->>>>>>> ccb03a313c3f3278e408a849294738a50b7ec4d0
 
 			producer.onConnected(() => {
 				connected = true;

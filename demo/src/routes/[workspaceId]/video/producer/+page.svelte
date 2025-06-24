@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
 	
@@ -131,7 +130,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new video.VideoProducer(settings.transportServerUrl);
+			producer = new video.VideoProducer("https://blanchon-robothub-transportserver.hf.space/api");
 
 			producer.onConnected(() => {
 				connected = true;
@@ -195,7 +194,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new video.VideoProducer(settings.transportServerUrl);
+			producer = new video.VideoProducer('https://blanchon-robothub-transportserver.hf.space/api');
 
 			producer.onConnected(() => {
 				connected = true;

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
 	
@@ -19,7 +18,7 @@
 
 	// Remote video stream
 	let remoteVideoStream = $state<MediaStream | null>(null);
-	let remoteVideoRef: HTMLVideoElement;
+	let remoteVideoRef: HTMLVideoElement | null = $state(null);
 
 	// Stream status
 	let streamActive = $state<boolean>(false);
@@ -80,11 +79,7 @@
 			connecting = true;
 			error = '';
 
-<<<<<<< HEAD
 			consumer = new video.VideoConsumer('https://blanchon-robothub-transportserver.hf.space/api');
-=======
-			consumer = new video.VideoConsumer(settings.transportServerUrl);
->>>>>>> ccb03a313c3f3278e408a849294738a50b7ec4d0
 
 			// Set up event handlers
 			consumer.onConnected(() => {
@@ -259,6 +254,7 @@
 			remoteVideoRef.play().catch((err) => {
 				console.warn('Auto-play failed:', err);
 				// Try to play with user gesture required
+				if (!remoteVideoRef) return;
 				remoteVideoRef.muted = true;
 				remoteVideoRef.play().catch((err2) => {
 					console.error('Failed to play video even when muted:', err2);
@@ -514,6 +510,7 @@
 						{#if streamActive && remoteVideoRef}
 							<button
 								onclick={() => {
+									if (!remoteVideoRef) return;
 									if (remoteVideoRef.requestFullscreen) {
 										remoteVideoRef.requestFullscreen();
 									}

@@ -5,7 +5,6 @@ colorFrom: blue
 colorTo: purple
 sdk: docker
 app_port: 7860
-dockerfile_path: services/transport-server/Dockerfile
 suggested_hardware: cpu-upgrade
 suggested_storage: small
 short_description: Real-time robotics control 

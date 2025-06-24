@@ -1,4 +1,3 @@
-# Multi-stage Dockerfile for LeRobot Arena Transport Server
 # Stage 1: Build frontend with Bun (client library + demo)
 FROM oven/bun:1-alpine AS frontend-builder
 
@@ -19,13 +18,11 @@ RUN bun install --frozen-lockfile
 COPY client/js/src/ ./src/
 COPY client/js/bun.lock* ./
 
-# Build and link client library
+# Build the client library
 RUN bun run build
-RUN bun link
 
-# Install demo dependencies with linked client library
+# Install demo dependencies
 WORKDIR /app/demo
-RUN bun link @robothub/transport-server-client
 RUN bun install --frozen-lockfile
 
 # Copy demo source code

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Tests for the LeRobot Arena Video Client
+Tests for the RobotHub TransportServer Video Client
 
 Basic tests to validate the video client implementation
 """

@@ -1,5 +1,5 @@
 /**
- * LeRobot Arena Video Client - Main Module
+ * RobotHub TransportServer Video Client - Main Module
  * 
  * TypeScript/JavaScript client for video streaming and monitoring
  */

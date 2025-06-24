@@ -1,9 +1,10 @@
 """
-Core video client for LeRobot Arena
+Core video client for RobotHub TransportServer
 Base class providing REST API, WebSocket, and WebRTC functionality
 """
 
 import asyncio
+import contextlib
 import json
 import logging
 import time
@@ -28,6 +29,7 @@ from .types import (
     DisconnectedCallback,
     ErrorCallback,
     JoinMessage,
+    ParticipantInfo,
     ParticipantRole,
     RecoveryConfig,
     RoomInfo,
@@ -44,7 +46,7 @@ logger = logging.getLogger(__name__)
 
 class VideoClientCore:
     """
-    Core video client for LeRobot Arena
+    Core video client for RobotHub TransportServer
     Base class providing REST API, WebSocket, and WebRTC functionality
     """
 
@@ -233,7 +235,7 @@ class VideoClientCore:
             return False
 
         except Exception as e:
-            logger.error(f"Failed to connect to room {room_id}: {e}")
+            logger.exception(f"Failed to connect to room {room_id}: {e}")
             await self._cleanup_connection()
             return False
 
@@ -278,7 +280,8 @@ class VideoClientCore:
     async def create_offer(self) -> RTCSessionDescription:
         """Create WebRTC offer"""
         if not self.peer_connection:
-            raise ValueError("Peer connection not created")
+            msg = "Peer connection not created"
+            raise ValueError(msg)
 
         offer = await self.peer_connection.createOffer()
         await self.peer_connection.setLocalDescription(offer)
@@ -289,7 +292,8 @@ class VideoClientCore:
     ) -> RTCSessionDescription:
         """Create WebRTC answer"""
         if not self.peer_connection:
-            raise ValueError("Peer connection not created")
+            msg = "Peer connection not created"
+            raise ValueError(msg)
 
         await self.peer_connection.setRemoteDescription(offer)
         answer = await self.peer_connection.createAnswer()
@@ -299,26 +303,28 @@ class VideoClientCore:
     async def set_remote_description(self, description: RTCSessionDescription) -> None:
         """Set remote description"""
         if not self.peer_connection:
-            raise ValueError("Peer connection not created")
+            msg = "Peer connection not created"
+            raise ValueError(msg)
         await self.peer_connection.setRemoteDescription(description)
 
     async def add_ice_candidate(self, candidate: RTCIceCandidate) -> None:
         """Add ICE candidate"""
         if not self.peer_connection:
-            raise ValueError("Peer connection not created")
+            msg = "Peer connection not created"
+            raise ValueError(msg)
         await self.peer_connection.addIceCandidate(candidate)
 
     # ============= MEDIA METHODS =============
 
     async def start_producing(self, constraints: dict[str, Any] | None = None) -> Any:
         """Start video production (to be implemented by subclasses)"""
-        raise NotImplementedError("start_producing must be implemented by subclasses")
+        msg = "start_producing must be implemented by subclasses"
+        raise NotImplementedError(msg)
 
     async def start_screen_share(self) -> Any:
         """Start screen sharing (to be implemented by subclasses)"""
-        raise NotImplementedError(
-            "start_screen_share must be implemented by subclasses"
-        )
+        msg = "start_screen_share must be implemented by subclasses"
+        raise NotImplementedError(msg)
 
     def stop_producing(self) -> None:
         """Stop video production"""
@@ -374,14 +380,14 @@ class VideoClientCore:
                     data = json.loads(message)
                     await self._process_message(data)
                 except json.JSONDecodeError:
-                    logger.error(f"Invalid JSON received: {message}")
+                    logger.exception(f"Invalid JSON received: {message}")
                 except Exception as e:
-                    logger.error(f"Error processing message: {e}")
+                    logger.exception(f"Error processing message: {e}")
 
         except websockets.exceptions.ConnectionClosed:
             logger.info("WebSocket connection closed")
         except Exception as e:
-            logger.error(f"WebSocket error: {e}")
+            logger.exception(f"WebSocket error: {e}")
         finally:
             self.connected = False
             if self.on_disconnected_callback:
@@ -482,7 +488,7 @@ class VideoClientCore:
 
             # Handle failed connections for consumers
             if (
-                state in ["failed", "disconnected"]
+                state in {"failed", "disconnected"}
                 and self.role == ParticipantRole.CONSUMER
             ):
                 logger.warning("⚠️ WebRTC connection failed, attempting to restart...")
@@ -554,7 +560,7 @@ class VideoClientCore:
                 logger.warning("⚠️ No start_receiving method available for recovery")
 
         except Exception as e:
-            logger.error(f"❌ Failed to recover WebRTC connection: {e}")
+            logger.exception(f"❌ Failed to recover WebRTC connection: {e}")
             # Schedule another retry
             await asyncio.sleep(5)
             if self.connected and self.role == ParticipantRole.CONSUMER:
@@ -595,7 +601,7 @@ class VideoClientCore:
                 },
             )
         except Exception as e:
-            logger.error(f"Failed to send ICE candidate: {e}")
+            logger.exception(f"Failed to send ICE candidate: {e}")
 
     # ============= PRIVATE HELPERS =============
 
@@ -625,10 +631,8 @@ class VideoClientCore:
         # Stop message handling task
         if self._message_task:
             self._message_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._message_task
-            except asyncio.CancelledError:
-                pass
             self._message_task = None
 
         # Close WebSocket
@@ -653,11 +657,18 @@ class VideoClientCore:
 
     def _dict_to_room_info(self, data: dict[str, Any]) -> RoomInfo:
         """Convert dictionary to RoomInfo object"""
-        # Implementation depends on actual API response format
-        # This is a placeholder
+        # Convert participants dict to ParticipantInfo object
+        participants_data = data.get("participants", {})
+        participants = ParticipantInfo(
+            producer=participants_data.get("producer"),
+            consumers=participants_data.get("consumers", []),
+            total=participants_data.get("total", 0),
+        )
+
         return RoomInfo(
             id=data.get("id", ""),
-            participants=data.get("participants", {}),
+            workspace_id=data.get("workspace_id", ""),
+            participants=participants,
             frame_count=data.get("frame_count", 0),
             config=VideoConfig(),
             has_producer=data.get("has_producer", False),
@@ -666,11 +677,18 @@ class VideoClientCore:
 
     def _dict_to_room_state(self, data: dict[str, Any]) -> RoomState:
         """Convert dictionary to RoomState object"""
-        # Implementation depends on actual API response format
-        # This is a placeholder
+        # Convert participants dict to ParticipantInfo object
+        participants_data = data.get("participants", {})
+        participants = ParticipantInfo(
+            producer=participants_data.get("producer"),
+            consumers=participants_data.get("consumers", []),
+            total=participants_data.get("total", 0),
+        )
+
         return RoomState(
             room_id=data.get("room_id", ""),
-            participants=data.get("participants", {}),
+            workspace_id=data.get("workspace_id", ""),
+            participants=participants,
             frame_count=data.get("frame_count", 0),
             last_frame_time=data.get("last_frame_time"),
             current_config=VideoConfig(),

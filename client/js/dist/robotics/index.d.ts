@@ -1,5 +1,5 @@
 /**
- * LeRobot Arena Robotics Client - Main Module
+ * RobotHub TransportServer Robotics Client - Main Module
  *
  * TypeScript/JavaScript client for robotics control and monitoring
  */

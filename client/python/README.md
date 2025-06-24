@@ -1,62 +1,63 @@
-# LeRobot Arena Python Client
+# RobotHub TransportServer Python Client
 
-Python client library for the LeRobot Arena robotics API with separate Producer and Consumer classes.
+A Python client library for real-time robotics control and video streaming via the RobotHub TransportServer platform. Built with AsyncIO for high-performance concurrent operations.
 
-## Installation
+## 🎯 Purpose
+
+This client library provides **easy access** to the RobotHub TransportServer from Python applications:
+
+- **Robotics Control**: Send joint commands and receive robot state updates
+- **Video Streaming**: Stream and receive video feeds via WebRTC
+- **Multi-Workspace**: Organize connections across isolated workspaces
+- **AsyncIO Support**: Non-blocking operations for real-time robotics
+
+## 📦 Installation
 
 ```bash
-pip install -e .
+uv add transport-server-client
 ```
 
-Or with development dependencies:
-
+Or install from source:
 ```bash
-pip install -e ".[dev]"
+uv pip install -e .
 ```
 
-## Basic Usage
+## 🚀 Quick Start
 
-### Producer (Controller) Example
+### Robotics Control
+
+#### Producer (Send Commands)
 
 ```python
 import asyncio
 from transport_server_client import RoboticsProducer
 
 async def main():
-    # Create producer client
     producer = RoboticsProducer('http://localhost:8000')
     
-    # List available rooms
-    rooms = await producer.list_rooms()
-    print('Available rooms:', rooms)
-    
-    # Create new room and connect
+    # Create room and connect
     room_id = await producer.create_room()
     await producer.connect(room_id)
     
-    # Send initial state
-    await producer.send_state_sync({
-        'shoulder': 45.0,
-        'elbow': -20.0
-    })
-    
-    # Send joint updates (only changed values will be forwarded!)
+    # Send joint commands
     await producer.send_joint_update([
         {'name': 'shoulder', 'value': 45.0},
         {'name': 'elbow', 'value': -20.0}
     ])
     
-    # Handle errors
-    producer.on_error(lambda err: print(f'Error: {err}'))
+    # Send complete state
+    await producer.send_state_sync({
+        'shoulder': 60.0,
+        'elbow': -30.0,
+        'wrist': 15.0
+    })
     
-    # Disconnect
     await producer.disconnect()
 
-if __name__ == "__main__":
-    asyncio.run(main())
+asyncio.run(main())
 ```
 
-### Consumer (Robot Executor) Example
+#### Consumer (Receive Commands)
 
 ```python
 import asyncio
@@ -64,179 +65,145 @@ from transport_server_client import RoboticsConsumer
 
 async def main():
     consumer = RoboticsConsumer('http://localhost:8000')
+    await consumer.connect('room-id')
     
-    # Connect to existing room
-    room_id = "your-room-id"
-    await consumer.connect(room_id)
-    
-    # Get initial state
-    initial_state = await consumer.get_state_sync()
-    print('Initial state:', initial_state)
-    
-    # Set up event handlers
-    def on_state_sync(state):
-        print('State sync:', state)
-    
+    # Handle joint updates
     def on_joint_update(joints):
-        print('Execute joints:', joints)
-        # Execute on actual robot hardware
-        for joint in joints:
-            print(f"Moving {joint['name']} to {joint['value']}")
+        print('🤖 Robot moving:', joints)
+        # Execute on your robot hardware
     
-    def on_error(error):
-        print(f'Error: {error}')
+    def on_state_sync(state):
+        print('📊 Robot state:', state)
     
-    # Register callbacks
-    consumer.on_state_sync(on_state_sync)
     consumer.on_joint_update(on_joint_update)
-    consumer.on_error(on_error)
+    consumer.on_state_sync(on_state_sync)
     
     # Keep running
-    try:
-        await asyncio.sleep(60)  # Run for 60 seconds
-    finally:
-        await consumer.disconnect()
+    await asyncio.sleep(60)
+    await consumer.disconnect()
 
-if __name__ == "__main__":
-    asyncio.run(main())
+asyncio.run(main())
 ```
 
-### Factory Function Usage
+### Video Streaming
 
 ```python
 import asyncio
-from transport_server_client import create_client
+from transport_server_client.video import VideoProducer, VideoConsumer
 
-async def main():
-    # Create clients using factory function
-    producer = create_client("producer", "http://localhost:8000")
-    consumer = create_client("consumer", "http://localhost:8000")
+async def video_example():
+    # Producer - Stream video
+    producer = VideoProducer('http://localhost:8000')
+    room_info = await producer.create_room()
+    await producer.connect(room_info['workspace_id'], room_info['room_id'])
+    await producer.start_camera()
     
-    # Or use convenience functions
-    from transport_server_client import create_producer_client, create_consumer_client
+    # Consumer - Receive video
+    consumer = VideoConsumer('http://localhost:8000')
+    await consumer.connect(room_info['workspace_id'], room_info['room_id'])
     
-    # Quick producer setup (auto-creates room and connects)
-    producer = await create_producer_client('http://localhost:8000')
-    print(f"Producer connected to room: {producer.room_id}")
+    def on_frame(frame_data):
+        print(f'Frame received: {len(frame_data)} bytes')
     
-    # Quick consumer setup (connects to existing room)
-    consumer = await create_consumer_client(producer.room_id, 'http://localhost:8000')
+    consumer.on_frame_update(on_frame)
+    await consumer.start_receiving()
     
-    # Use context managers for automatic cleanup
-    async with RoboticsProducer('http://localhost:8000') as producer:
-        room_id = await producer.create_room()
-        await producer.connect(room_id)
-        await producer.send_state_sync({'joint1': 10.0})
+    await asyncio.sleep(30)  # Stream for 30 seconds
+    
+    await producer.disconnect()
+    await consumer.disconnect()
 
-if __name__ == "__main__":
-    asyncio.run(main())
+asyncio.run(video_example())
 ```
 
-### Advanced Example: Producer-Consumer Pair
-
-```python
-import asyncio
-from transport_server_client import RoboticsProducer, RoboticsConsumer
-
-async def run_producer(room_id: str):
-    async with RoboticsProducer() as producer:
-        await producer.connect(room_id)
-        
-        # Simulate sending commands
-        for i in range(10):
-            await producer.send_state_sync({
-                'joint1': i * 10.0,
-                'joint2': i * -5.0
-            })
-            await asyncio.sleep(1)
-
-async def run_consumer(room_id: str):
-    async with RoboticsConsumer() as consumer:
-        await consumer.connect(room_id)
-        
-        def handle_joint_update(joints):
-            print(f"🤖 Executing: {joints}")
-            # Your robot control code here
-        
-        consumer.on_joint_update(handle_joint_update)
-        
-        # Keep listening
-        await asyncio.sleep(15)
-
-async def main():
-    # Create room
-    producer = RoboticsProducer()
-    room_id = await producer.create_room()
-    
-    # Run producer and consumer concurrently
-    await asyncio.gather(
-        run_producer(room_id),
-        run_consumer(room_id)
-    )
-
-if __name__ == "__main__":
-    asyncio.run(main())
-```
-
-## API Reference
+## 📚 API Reference
 
 ### RoboticsProducer
 
-**Connection Methods:**
-- `connect(room_id, participant_id=None)` - Connect as producer to room
+```python
+# Connection
+await producer.connect(workspace_id, room_id)
+room_info = await producer.create_room()  # Auto-generates IDs
+await producer.disconnect()
 
-**Control Methods:**
-- `send_joint_update(joints)` - Send joint updates
-- `send_state_sync(state)` - Send state synchronization (dict format)
-- `send_emergency_stop(reason)` - Send emergency stop
+# Control
+await producer.send_joint_update(joints)
+await producer.send_state_sync(state)
+await producer.send_emergency_stop(reason)
 
-**Event Callbacks:**
-- `on_error(callback)` - Set error callback
-- `on_connected(callback)` - Set connection callback  
-- `on_disconnected(callback)` - Set disconnection callback
+# Room management
+rooms = await producer.list_rooms(workspace_id)
+await producer.delete_room(workspace_id, room_id)
+```
 
 ### RoboticsConsumer
 
-**Connection Methods:**
-- `connect(room_id, participant_id=None)` - Connect as consumer to room
+```python
+# Connection
+await consumer.connect(workspace_id, room_id)
+state = await consumer.get_state_sync()
 
-**State Methods:**
-- `get_state_sync()` - Get current state synchronously
+# Event callbacks
+consumer.on_joint_update(callback)
+consumer.on_state_sync(callback)
+consumer.on_emergency_stop(callback)
+consumer.on_error(callback)
+```
 
-**Event Callbacks:**
-- `on_state_sync(callback)` - Set state sync callback
-- `on_joint_update(callback)` - Set joint update callback
-- `on_error(callback)` - Set error callback
-- `on_connected(callback)` - Set connection callback
-- `on_disconnected(callback)` - Set disconnection callback
+### Video APIs
 
-### RoboticsClientCore (Base Class)
+```python
+# VideoProducer
+await producer.start_camera(config)
+await producer.start_screen_share()
+await producer.stop_streaming()
 
-**REST API Methods:**
-- `list_rooms()` - List all available rooms
-- `create_room(room_id=None)` - Create a new room
-- `delete_room(room_id)` - Delete a room
-- `get_room_state(room_id)` - Get current room state
-- `get_room_info(room_id)` - Get basic room information
+# VideoConsumer
+await consumer.start_receiving()
+consumer.on_frame_update(callback)
+consumer.on_stream_started(callback)
+```
 
-**Utility Methods:**
-- `send_heartbeat()` - Send heartbeat to server
-- `is_connected()` - Check connection status
-- `get_connection_info()` - Get connection details
-- `disconnect()` - Disconnect from room
+## ⚡ Factory Functions
 
-### Factory Functions
+Quick setup helpers:
 
-- `create_client(role, base_url)` - Create client by role ("producer" or "consumer")
-- `create_producer_client(base_url, room_id=None)` - Create connected producer
-- `create_consumer_client(room_id, base_url)` - Create connected consumer
+```python
+from transport_server_client import create_producer_client, create_consumer_client
 
-## Requirements
+# Quick producer setup
+producer = await create_producer_client('http://localhost:8000')
 
-- Python 3.12+
-- aiohttp>=3.9.0
-- websockets>=12.0
+# Quick consumer setup  
+consumer = await create_consumer_client('room-id', 'http://localhost:8000')
+```
 
-## Migration from v1
+## 🔧 Context Managers
 
-The old `RoboticsClient` is still available for backward compatibility but is now an alias to `RoboticsClientCore`. For new code, use the specific `RoboticsProducer` or `RoboticsConsumer` classes for better type safety and cleaner APIs.
+Automatic cleanup with context managers:
+
+```python
+async with RoboticsProducer('http://localhost:8000') as producer:
+    room_id = await producer.create_room()
+    await producer.connect(room_id)
+    
+    await producer.send_state_sync({'joint1': 45.0})
+    # Automatically disconnected when exiting
+```
+
+## 🛠️ Development
+
+```bash
+# Install dependencies
+uv sync
+
+# Install in development mode
+uv pip install -e ".[dev]"
+
+# Run tests
+pytest
+```
+
+---
+
+**Start controlling robots with Python!** 🤖✨

@@ -1,5 +1,5 @@
 /**
- * Factory functions for creating LeRobot Arena robotics clients
+ * Factory functions for creating RobotHub TransportServer robotics clients
  */
 import { RoboticsProducer } from './producer.js';
 import { RoboticsConsumer } from './consumer.js';

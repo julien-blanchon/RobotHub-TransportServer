@@ -1,5 +1,5 @@
 /**
- * Core robotics client for LeRobot Arena
+ * Core robotics client for RobotHub TransportServer
  * Base class providing REST API and WebSocket functionality
  */
 import { EventEmitter } from 'eventemitter3';

@@ -1,5 +1,5 @@
 ---
-title: LeRobot Arena Transport Server
+title: RobotHub TransportServer
 emoji: 🤖
 colorFrom: blue
 colorTo: purple
@@ -7,7 +7,7 @@ sdk: docker
 app_port: 7860
 suggested_hardware: cpu-upgrade
 suggested_storage: small
-short_description: Real-time robotics control 
+short_description: Real-time robotics control and video streaming platform
 tags:
   - robotics
   - control
@@ -17,336 +17,341 @@ tags:
   - real-time
   - video-streaming
   - transport-server
+  - robothub
 pinned: true
 fullWidth: true
 ---
 
-# 🤖 LeRobot Arena Transport Server with UI
+# 🤖 RobotHub TransportServer
 
-A complete Docker deployment of the LeRobot Arena Transport Server with integrated web UI. This combines the FastAPI backend with a SvelteKit frontend in a single container, inspired by the [LeRobot Arena Hugging Face Space](https://huggingface.co/spaces/blanchon/LeRobot-Arena).
+A high-performance, real-time communication platform for robotics control and video streaming. Built for multi-tenant environments with WebSocket and WebRTC technologies.
 
-## 🚀 Quick Start with Docker
+## 🚀 Overview
 
-The easiest way to run the complete LeRobot Arena Transport Server is using Docker, which sets up both the frontend and backend automatically.
+RobotHub TransportServer enables real-time, bidirectional communication between robotics systems, cameras, and control interfaces. It provides a unified platform for:
 
-### Prerequisites
+- **Real-time robot joint control** via WebSocket connections
+- **Live video streaming** via WebRTC technology  
+- **Multi-workspace isolation** for secure multi-tenant deployments
+- **Producer/Consumer architecture** for scalable robotics applications
+- **Cross-platform client libraries** (JavaScript/TypeScript and Python)
 
-- [Docker](https://www.docker.com/get-started) installed on your system
-- [Docker Compose](https://docs.docker.com/compose/install/) (usually included with Docker Desktop)
+## 🏗️ Architecture
 
-### Step-by-Step Instructions
+### Core Components
 
-1. **Navigate to the transport server directory**
-   ```bash
-   cd services/transport-server
-   ```
-
-2. **Build the Docker image**
-   ```bash
-   docker build -t lerobot-arena-transport .
-   ```
-
-3. **Run the container**
-   ```bash
-   docker run -p 7860:7860 -e SERVE_FRONTEND=true lerobot-arena-transport
-   ```
-
-4. **Access the application**
-   - **Frontend**: http://localhost:7860
-   - **Backend API**: http://localhost:7860/api
-   - **API Documentation**: http://localhost:7860/api/docs
-
-5. **Stop the container**
-   ```bash
-   # Find the container ID
-   docker ps
-   
-   # Stop the container
-   docker stop <container_id>
-   ```
-
-### Alternative Build & Run Options
-
-**One-liner build and run:**
-```bash
-docker build -t lerobot-arena-transport . && docker run -p 7860:7860 -e SERVE_FRONTEND=true lerobot-arena-transport
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    RobotHub TransportServer                 │
+├─────────────────────────────────────────────────────────────┤
+│  🌐 REST API          │  🔌 WebSocket          │  📹 WebRTC  │
+│  - Room management    │  - Real-time control   │  - Video    │
+│  - Workspace control  │  - Joint updates       │  - Streaming│
+│  - Status & health    │  - State sync          │  - P2P conn │
+├─────────────────────────────────────────────────────────────┤
+│             Multi-Workspace & Room Management               │
+│  workspace_1/          workspace_2/          workspace_n/   │
+│  ├── robotics_room_1  ├── robotics_room_1   ├── ...        │
+│  ├── robotics_room_2  ├── video_room_1      │              │
+│  └── video_room_1     └── video_room_2      │              │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-**Run with custom environment variables:**
+### Producer/Consumer Pattern
+
+**Robotics Control:**
+- **Producer**: Sends joint commands and control signals
+- **Consumer**: Receives commands and executes robot movements
+
+**Video Streaming:**
+- **Producer**: Streams camera feeds or screen content
+- **Consumer**: Receives and displays video streams
+
+## 🛠️ Key Features
+
+### ✅ Real-time Robotics Control
+- Joint-level robot control with normalized values
+- Emergency stop mechanisms
+- State synchronization between multiple clients
+- Support for 6-DOF robotic arms (extensible)
+
+### ✅ WebRTC Video Streaming
+- Low-latency video streaming
+- Multiple camera support
+- Screen sharing capabilities
+- Automatic quality adaptation
+
+### ✅ Multi-Workspace Architecture
+- Complete isolation between workspaces
+- UUID-based workspace identification
+- Scalable room management within workspaces
+
+### ✅ Cross-Platform Clients
+- **JavaScript/TypeScript**: Browser and Node.js support
+- **Python**: AsyncIO-based client for robotics applications
+- Consistent API across all platforms
+
+### ✅ Production Ready
+- Docker containerization
+- Health monitoring endpoints
+- Comprehensive logging
+- Error handling and recovery
+
+## 🚀 Quick Start
+
+### Using Docker (Recommended)
+
 ```bash
-docker run -p 8080:7860 \
-  -e SERVE_FRONTEND=true \
-  -e PORT=7860 \
-  -e HOST=0.0.0.0 \
-  lerobot-arena-transport
+# Clone the repository
+git clone https://github.com/julien-blanchon/RobotHub-TransportServer
+cd RobotHub-TransportServer
+
+# Build and run with Docker
+docker build -t robothub-transport-server .
+docker run -p 8000:8000 robothub-transport-server
 ```
 
-**Run with volume mounts for logs:**
-```bash
-docker run -p 7860:7860 \
-  -e SERVE_FRONTEND=true \
-  -v $(pwd)/logs:/home/user/app/logs \
-  lerobot-arena-transport
-```
-
-## 🛠️ Development Setup
-
-For local development with hot-reload capabilities:
-
-### Backend Development
+### Development Setup
 
 ```bash
-# Navigate to server directory
+# Install Python dependencies
 cd server
+uv venv
+source .venv/bin/activate
+uv sync
+uv pip install -e .
 
-# Install Python dependencies (using uv)
+# Start the server
+uv run launch_with_ui.py
+
+# The server will be available at:
+# - API: http://localhost:8000/api
+# - Demo UI: http://localhost:8000
+```
+
+## 📚 Client Libraries
+
+### JavaScript/TypeScript
+
+```bash
+cd client/js
+bun install
+bun run build
+```
+
+```typescript
+import { robotics, video } from '@robothub/transport-server-client';
+
+// Robotics control
+const producer = new robotics.RoboticsProducer('http://localhost:8000');
+await producer.connect(workspaceId, roomId);
+await producer.sendJointUpdate([
+  { name: 'joint_1', value: 45.0 },
+  { name: 'joint_2', value: -30.0 }
+]);
+
+// Video streaming
+const videoProducer = new video.VideoProducer('http://localhost:8000');
+await videoProducer.connect(workspaceId, roomId);
+await videoProducer.startCamera();
+```
+
+### Python
+
+```bash
+cd client/python
+uv venv
+source .venv/bin/activate
+uv sync
+uv pip install -e .
+```
+
+```python
+import asyncio
+from transport_server_client import RoboticsProducer
+from transport_server_client.video import VideoProducer
+
+async def main():
+    # Robotics control
+    producer = RoboticsProducer('http://localhost:8000')
+    await producer.connect(workspace_id, room_id)
+    await producer.send_joint_update([
+        {'name': 'joint_1', 'value': 45.0},
+        {'name': 'joint_2', 'value': -30.0}
+    ])
+    
+    # Video streaming
+    video_producer = VideoProducer('http://localhost:8000')
+    await video_producer.connect(workspace_id, room_id)
+    await video_producer.start_camera()
+
+asyncio.run(main())
+```
+
+## 🎮 Interactive Demo
+
+The included demo application showcases all features:
+
+```bash
+cd demo
+bun install
+bun run dev
+```
+
+Visit `http://localhost:5173` to access:
+- **Workspace Management**: Create and manage isolated environments
+- **Robotics Control**: Real-time robot arm control interface
+- **Video Streaming**: Camera and screen sharing demos
+- **Multi-room Support**: Manage multiple concurrent sessions
+
+## 🔧 API Reference
+
+### REST Endpoints
+
+#### Workspaces & Rooms
+```
+GET    /robotics/workspaces/{workspace_id}/rooms
+POST   /robotics/workspaces/{workspace_id}/rooms
+DELETE /robotics/workspaces/{workspace_id}/rooms/{room_id}
+GET    /robotics/workspaces/{workspace_id}/rooms/{room_id}/state
+
+GET    /video/workspaces/{workspace_id}/rooms
+POST   /video/workspaces/{workspace_id}/rooms
+DELETE /video/workspaces/{workspace_id}/rooms/{room_id}
+```
+
+#### WebSocket Connections
+```
+WS /robotics/workspaces/{workspace_id}/rooms/{room_id}/ws
+WS /video/workspaces/{workspace_id}/rooms/{room_id}/ws
+```
+
+### Message Types
+
+#### Robotics Messages
+- `joint_update`: Send/receive joint position commands
+- `state_sync`: Synchronize complete robot state
+- `emergency_stop`: Emergency stop signal
+- `heartbeat`: Connection health monitoring
+
+#### Video Messages
+- `stream_started`: Video stream initiated
+- `stream_stopped`: Video stream ended  
+- `webrtc_offer/answer/ice`: WebRTC signaling
+- `video_config_update`: Stream configuration changes
+
+## 🔌 Integration Examples
+
+### ML/AI Robotics Pipeline
+
+```python
+# Example: AI model controlling robot via TransportServer
+import asyncio
+from transport_server_client import RoboticsProducer
+from transport_server_client.video import VideoConsumer
+
+class AIRobotController:
+    def __init__(self, server_url, workspace_id):
+        self.robot_producer = RoboticsProducer(server_url)
+        self.camera_consumer = VideoConsumer(server_url)
+        self.workspace_id = workspace_id
+    
+    async def start_control_loop(self):
+        # Connect to robot control room
+        await self.robot_producer.connect(self.workspace_id, 'robot_control')
+        
+        # Connect to camera feed
+        await self.camera_consumer.connect(self.workspace_id, 'camera_feed')
+        
+        # Set up frame processing
+        self.camera_consumer.on_frame_update(self.process_frame)
+    
+    async def process_frame(self, frame_data):
+        # AI inference on camera frame
+        joint_commands = await self.ai_model.predict(frame_data)
+        
+        # Send robot commands
+        await self.robot_producer.send_joint_update(joint_commands)
+```
+
+### Multi-Robot Coordination
+
+```typescript
+// Example: Coordinating multiple robots
+import { robotics } from '@robothub/transport-server-client';
+
+class MultiRobotCoordinator {
+  private robots: Map<string, robotics.RoboticsProducer> = new Map();
+  
+  async addRobot(robotId: string, workspaceId: string, roomId: string) {
+    const producer = new robotics.RoboticsProducer();
+    await producer.connect(workspaceId, roomId);
+    this.robots.set(robotId, producer);
+  }
+  
+  async coordinatedMovement(positions: Map<string, JointUpdate[]>) {
+    // Send synchronized commands to all robots
+    const promises = Array.from(positions.entries()).map(([robotId, joints]) => {
+      const producer = this.robots.get(robotId);
+      return producer?.sendJointUpdate(joints);
+    });
+    
+    await Promise.all(promises);
+  }
+}
+```
+
+## 📁 Project Structure
+
+```
+RobotHub-TransportServer/
+├── server/                 # FastAPI backend server
+│   ├── src/
+│   │   ├── robotics/      # Robotics control logic
+│   │   ├── video/         # Video streaming logic
+│   │   └── api.py         # Main API routes
+│   └── launch_with_ui.py  # Server launcher
+├── client/
+│   ├── js/                # JavaScript/TypeScript client
+│   └── python/            # Python client library
+├── demo/                  # SvelteKit demo application
+├── Dockerfile             # Container configuration
+└── README.md
+```
+
+## 🚢 Deployment
+
+### Production Docker Deployment
+
+```bash
+# Build production image
+docker build -t robothub-transport-server .
+
+# Run with custom configuration
+docker run -d \
+  --name robothub-transport-server \
+  -p 8000:8000 \
+  -e LOG_LEVEL=info \
+  robothub-transport-server
+```
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone https://github.com/julien-blanchon/RobotHub-TransportServer
+cd RobotHub-TransportServer
+
+# Server development
+cd server
+uv venv && source .venv/bin/activate
 uv sync
 
-# Start the backend server only
-python api.py
-```
-
-### Frontend Development
-
-```bash
-# Navigate to demo directory
-cd demo
-
-# Install dependencies
-bun install
-
-# Start the development server
-bun run dev
-```
-
-### Client Library Development
-
-```bash
-# Navigate to client library
+# Client development
 cd client/js
-
-# Install dependencies
 bun install
 
-# Build the client library
-bun run build
-```
-
-## 📋 Project Structure
-
-```
-services/transport-server/
-├── server/                     # Python FastAPI backend
-│   ├── src/                   # Source code
-│   ├── api.py                 # Main API application
-│   ├── launch_with_ui.py      # Combined launcher
-│   └── pyproject.toml         # Python dependencies
-├── demo/                      # SvelteKit frontend
-│   ├── src/                   # Frontend source code
-│   ├── package.json           # Node.js dependencies
-│   └── svelte.config.js       # SvelteKit configuration
-├── client/js/                 # TypeScript client library
-│   ├── src/                   # Client library source
-│   └── package.json           # Client dependencies
-├── Dockerfile                 # Docker configuration
-├── docker-compose.yml         # Docker Compose setup
-└── README.md                  # This file
-```
-
-## 🐳 Docker Information
-
-The Docker setup includes:
-
-- **Multi-stage build**: Optimized for production using Bun and uv
-- **Client library build**: Builds the TypeScript client first
-- **Frontend build**: Compiles SvelteKit app to static files
-- **Backend integration**: FastAPI serves both API and static files
-- **Port mapping**: Single port 7860 for both frontend and API
-- **User permissions**: Properly configured for Hugging Face Spaces
-- **Environment variables**: Configurable via environment
-
-### Environment Variables
-
-- `SERVE_FRONTEND=true`: Enable frontend serving (default: false)
-- `PORT=7860`: Port to run the server on (default: 7860)
-- `HOST=0.0.0.0`: Host to bind to (default: 0.0.0.0)
-
-## 🌐 What's Included
-
-### Backend Features
-- **Real-time Robot Control**: WebSocket-based communication
-- **Video Streaming**: WebRTC video streaming capabilities
-- **REST API**: Complete robotics control API
-- **Room Management**: Create and manage robot control sessions
-- **Health Monitoring**: Built-in health checks and logging
-
-### Frontend Features
-- **Dashboard**: Server status and room overview
-- **Robot Control**: 6-DOF robot arm control interface
-- **Real-time Monitoring**: Live joint state visualization
-- **Workspace Management**: Isolated environments for different sessions
-- **Modern UI**: Responsive design with Tailwind CSS
-
-### Architecture
-- **Frontend**: Svelte 5, TypeScript, Tailwind CSS
-- **Backend**: FastAPI, Python 3.12, uvicorn
-- **Client Library**: TypeScript with WebSocket support
-- **Build System**: Bun for frontend, uv for Python
-- **Container**: Multi-stage Docker build
-
-## 🔧 API Endpoints
-
-### Health Check
-- `GET /health` - Server health status
-- `GET /api/health` - API health status
-
-### Robotics API
-- `GET /api/robotics/rooms` - List active rooms
-- `POST /api/robotics/rooms` - Create new room
-- `DELETE /api/robotics/rooms/{room_id}` - Delete room
-- `WebSocket /api/robotics/ws/{room_id}` - Real-time control
-
-### Video API
-- `GET /api/video/rooms` - List video rooms
-- `WebSocket /api/video/ws/{room_id}` - Video streaming
-
-## 🧪 Testing the Setup
-
-Run the included test script to verify everything works:
-
-```bash
-./test-docker.sh
-```
-
-This script will build the image, start a container, test all endpoints, and clean up automatically.
-
-## 🚨 Troubleshooting
-
-### Port Conflicts
-If port 7860 is already in use:
-
-```bash
-# Check what's using the port
-lsof -i :7860
-
-# Use different port
-docker run -p 8080:7860 -e SERVE_FRONTEND=true lerobot-arena-transport
-```
-
-### Container Issues
-
-```bash
-# View logs
-docker logs <container_id>
-
-# Rebuild without cache
-docker build --no-cache -t lerobot-arena-transport .
-
-# Run with verbose logging
-docker run -p 7860:7860 -e SERVE_FRONTEND=true -e LOG_LEVEL=debug lerobot-arena-transport
-```
-
-### Development Issues
-
-```bash
-# Clear node modules and reinstall (for local development)
+# Demo development  
 cd demo
-rm -rf node_modules
 bun install
-
-# Clear SvelteKit cache
-rm -rf .svelte-kit
-bun run dev
-
-# Re-link client library (if needed for local development)
-cd ../client/js
-bun link
-cd ../../demo
-bun link lerobot-arena-client
 ```
-
-### Client Library Issues
-
-```bash
-# Rebuild client library
-cd client/js
-bun run clean
-bun run build
-```
-
-## 🚀 Hugging Face Spaces Deployment
-
-This project is configured for deployment on Hugging Face Spaces:
-
-1. **Fork** this repository to your GitHub account
-2. **Create a new Space** on Hugging Face Spaces
-3. **Connect** your GitHub repository
-4. **Select Docker SDK** (should be auto-detected)
-5. **Set the Dockerfile path** to `services/transport-server/Dockerfile`
-6. **Deploy**
-
-The Space will automatically build and run both the frontend and backend.
-
-### Hugging Face Spaces Configuration
-
-Add this to your Space's README.md frontmatter:
-
-```yaml
----
-title: LeRobot Arena Transport Server
-emoji: 🤖
-colorFrom: blue
-colorTo: purple
-sdk: docker
-app_port: 7860
-dockerfile_path: services/transport-server/Dockerfile
-suggested_hardware: cpu-upgrade
-suggested_storage: small
-short_description: Real-time robotics control and video streaming
-tags:
-  - robotics
-  - control
-  - websocket
-  - fastapi
-  - svelte
-pinned: true
-fullWidth: true
----
-```
-
-## 🎯 Use Cases
-
-### Development & Testing
-- **API Development**: Test robotics control APIs
-- **Frontend Development**: Develop robotics UIs
-- **Integration Testing**: Test real-time communication
-
-### Production Deployment
-- **Robot Control**: Remote robot operation
-- **Multi-user**: Multiple operators on same robot
-- **Monitoring**: Real-time robot state monitoring
-
-### Education & Demos
-- **Learning**: Robotics programming education
-- **Demonstrations**: Showcase robotics capabilities
-- **Prototyping**: Rapid robotics application development
-
-## 🤝 Contributing
-
-1. **Fork** the repository
-2. **Create feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Make changes** and add tests
-4. **Test with Docker** (`./test-docker.sh`)
-5. **Commit changes** (`git commit -m 'Add amazing feature'`)
-6. **Push to branch** (`git push origin feature/amazing-feature`)
-7. **Open Pull Request**
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-**Built with ❤️ for the robotics community** 🤖
-
-For more information, visit the [main LeRobot Arena project](https://github.com/lerobot-arena/lerobot-arena). 

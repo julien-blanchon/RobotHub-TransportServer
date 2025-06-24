@@ -15,7 +15,7 @@
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<div class="flex h-14 items-center justify-between">
 				<div class="flex items-center">
-					<h1 class="font-mono text-lg font-bold text-gray-900">🤖 LeRobot Arena Debug</h1>
+					<h1 class="font-mono text-lg font-bold text-gray-900">🤖 RobotHub TransportServer Debug</h1>
 					{#if isWorkspaceRoute}
 						<div class="ml-4 rounded bg-blue-100 px-2 py-1">
 							<span class="font-mono text-xs text-blue-800">Workspace: {workspaceId}</span>
@@ -86,7 +86,7 @@
 	<footer class="mt-auto border-t bg-white">
 		<div class="mx-auto max-w-7xl px-4 py-3">
 			<p class="text-center font-mono text-xs text-gray-500">
-				LeRobot Arena Debug Tool - Real-time Library Testing
+				RobotHub TransportServer Debug Tool - Real-time Library Testing
 				{#if isWorkspaceRoute}
 					| Workspace: {workspaceId}
 				{/if}

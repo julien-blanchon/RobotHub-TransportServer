@@ -1,5 +1,5 @@
 /**
- * Type definitions for LeRobot Arena Robotics Client
+ * Type definitions for RobotHub TransportServer Robotics Client
  */
 export type ParticipantRole = 'producer' | 'consumer';
 export type MessageType = 'joint_update' | 'state_sync' | 'heartbeat' | 'heartbeat_ack' | 'emergency_stop' | 'joined' | 'error';

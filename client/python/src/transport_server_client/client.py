@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import json
 import logging
 from collections.abc import Callable
@@ -11,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class RoboticsClientCore:
-    """Base client for LeRobot Arena robotics API"""
+    """Base client for RobotHub TransportServer robotics API"""
 
     def __init__(self, base_url: str = "http://localhost:8000"):
         self.base_url = base_url.rstrip("/")
@@ -32,14 +33,14 @@ class RoboticsClientCore:
 
     async def list_rooms(self, workspace_id: str) -> list[dict]:
         """List all available rooms in a workspace"""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
-                f"{self.api_base}/workspaces/{workspace_id}/rooms"
-            ) as response:
-                response.raise_for_status()
-                result = await response.json()
-                # Extract the rooms list from the response
-                return result.get("rooms", [])
+        async with (
+            aiohttp.ClientSession() as session,
+            session.get(f"{self.api_base}/workspaces/{workspace_id}/rooms") as response,
+        ):
+            response.raise_for_status()
+            result = await response.json()
+            # Extract the rooms list from the response
+            return result.get("rooms", [])
 
     async def create_room(
         self, workspace_id: str | None = None, room_id: str | None = None
@@ -52,47 +53,55 @@ class RoboticsClientCore:
         if room_id:
             payload["room_id"] = room_id
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.post(
                 f"{self.api_base}/workspaces/{final_workspace_id}/rooms", json=payload
-            ) as response:
-                response.raise_for_status()
-                result = await response.json()
-                return result["workspace_id"], result["room_id"]
+            ) as response,
+        ):
+            response.raise_for_status()
+            result = await response.json()
+            return result["workspace_id"], result["room_id"]
 
     async def delete_room(self, workspace_id: str, room_id: str) -> bool:
         """Delete a room"""
-        async with aiohttp.ClientSession() as session:
-            async with session.delete(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.delete(
                 f"{self.api_base}/workspaces/{workspace_id}/rooms/{room_id}"
-            ) as response:
-                if response.status == 404:
-                    return False
-                response.raise_for_status()
-                result = await response.json()
-                return result["success"]
+            ) as response,
+        ):
+            if response.status == 404:
+                return False
+            response.raise_for_status()
+            result = await response.json()
+            return result["success"]
 
     async def get_room_state(self, workspace_id: str, room_id: str) -> dict:
         """Get current room state"""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.get(
                 f"{self.api_base}/workspaces/{workspace_id}/rooms/{room_id}/state"
-            ) as response:
-                response.raise_for_status()
-                result = await response.json()
-                # Extract the state from the response
-                return result.get("state", {})
+            ) as response,
+        ):
+            response.raise_for_status()
+            result = await response.json()
+            # Extract the state from the response
+            return result.get("state", {})
 
     async def get_room_info(self, workspace_id: str, room_id: str) -> dict:
         """Get basic room information"""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(
+        async with (
+            aiohttp.ClientSession() as session,
+            session.get(
                 f"{self.api_base}/workspaces/{workspace_id}/rooms/{room_id}"
-            ) as response:
-                response.raise_for_status()
-                result = await response.json()
-                # Extract the room data from the response
-                return result.get("room", {})
+            ) as response,
+        ):
+            response.raise_for_status()
+            result = await response.json()
+            # Extract the room data from the response
+            return result.get("room", {})
 
     # ============= WEBSOCKET CONNECTION =============
 
@@ -165,11 +174,11 @@ class RoboticsClientCore:
                     logger.warning(f"Unexpected response from server: {response}")
 
             except TimeoutError:
-                logger.error("Timeout waiting for server response")
+                logger.exception("Timeout waiting for server response")
                 await self.websocket.close()
                 return False
             except json.JSONDecodeError:
-                logger.error("Invalid JSON response from server")
+                logger.exception("Invalid JSON response from server")
                 await self.websocket.close()
                 return False
 
@@ -188,17 +197,15 @@ class RoboticsClientCore:
             return True
 
         except Exception as e:
-            logger.error(f"Failed to connect to room {room_id}: {e}")
+            logger.exception(f"Failed to connect to room {room_id}: {e}")
             return False
 
     async def disconnect(self):
         """Disconnect from current room"""
         if self._message_task:
             self._message_task.cancel()
-            try:
+            with contextlib.suppress(asyncio.CancelledError):
                 await self._message_task
-            except asyncio.CancelledError:
-                pass
             self._message_task = None
 
         if self.websocket:
@@ -225,14 +232,14 @@ class RoboticsClientCore:
                     data = json.loads(message)
                     await self._process_message(data)
                 except json.JSONDecodeError:
-                    logger.error(f"Invalid JSON received: {message}")
+                    logger.exception(f"Invalid JSON received: {message}")
                 except Exception as e:
-                    logger.error(f"Error processing message: {e}")
+                    logger.exception(f"Error processing message: {e}")
 
         except websockets.exceptions.ConnectionClosed:
             logger.info("WebSocket connection closed")
         except Exception as e:
-            logger.error(f"WebSocket error: {e}")
+            logger.exception(f"WebSocket error: {e}")
         finally:
             self.connected = False
             await self._on_disconnected()
@@ -326,7 +333,8 @@ class RoboticsProducer(RoboticsClientCore):
     async def send_joint_update(self, joints: list[dict]):
         """Send joint updates"""
         if not self.connected:
-            raise ValueError("Must be connected to send joint updates")
+            msg = "Must be connected to send joint updates"
+            raise ValueError(msg)
 
         message = {"type": "joint_update", "data": joints}
         await self.websocket.send(json.dumps(message))
@@ -339,7 +347,8 @@ class RoboticsProducer(RoboticsClientCore):
     async def send_emergency_stop(self, reason: str = "Emergency stop"):
         """Send emergency stop signal"""
         if not self.connected:
-            raise ValueError("Must be connected to send emergency stop")
+            msg = "Must be connected to send emergency stop"
+            raise ValueError(msg)
 
         message = {"type": "emergency_stop", "reason": reason}
         await self.websocket.send(json.dumps(message))
@@ -413,7 +422,8 @@ class RoboticsConsumer(RoboticsClientCore):
     async def get_state_sync(self) -> dict:
         """Get current state synchronously"""
         if not self.workspace_id or not self.room_id:
-            raise ValueError("Must be connected to a room")
+            msg = "Must be connected to a room"
+            raise ValueError(msg)
 
         state = await self.get_room_state(self.workspace_id, self.room_id)
         return state.get("joints", {})
@@ -488,7 +498,8 @@ def create_client(role: str, base_url: str = "http://localhost:8000"):
         return RoboticsProducer(base_url)
     if role == "consumer":
         return RoboticsConsumer(base_url)
-    raise ValueError(f"Invalid role: {role}. Must be 'producer' or 'consumer'")
+    msg = f"Invalid role: {role}. Must be 'producer' or 'consumer'"
+    raise ValueError(msg)
 
 
 async def create_producer_client(

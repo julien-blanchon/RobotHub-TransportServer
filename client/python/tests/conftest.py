@@ -37,11 +37,11 @@ async def consumer():
 @pytest_asyncio.fixture
 async def test_room(producer):
     """Create a test room and clean up after test."""
-    room_id = await producer.create_room()
-    yield room_id
+    workspace_id, room_id = await producer.create_room()
+    yield workspace_id, room_id
     # Cleanup: delete the room after test
     try:
-        await producer.delete_room(room_id)
+        await producer.delete_room(workspace_id, room_id)
     except Exception:
         pass  # Room might already be deleted
 
@@ -49,20 +49,23 @@ async def test_room(producer):
 @pytest_asyncio.fixture
 async def connected_producer(producer, test_room):
     """Create a connected producer in a test room."""
-    await producer.connect(test_room)
-    yield producer, test_room
+    workspace_id, room_id = test_room
+    await producer.connect(workspace_id, room_id)
+    yield producer, workspace_id, room_id
 
 
 @pytest_asyncio.fixture
 async def connected_consumer(consumer, test_room):
     """Create a connected consumer in a test room."""
-    await consumer.connect(test_room)
-    yield consumer, test_room
+    workspace_id, room_id = test_room
+    await consumer.connect(workspace_id, room_id)
+    yield consumer, workspace_id, room_id
 
 
 @pytest_asyncio.fixture
 async def producer_consumer_pair(producer, consumer, test_room):
     """Create a connected producer-consumer pair in the same room."""
-    await producer.connect(test_room)
-    await consumer.connect(test_room)
-    yield producer, consumer, test_room
+    workspace_id, room_id = test_room
+    await producer.connect(workspace_id, room_id)
+    await consumer.connect(workspace_id, room_id)
+    yield producer, consumer, workspace_id, room_id

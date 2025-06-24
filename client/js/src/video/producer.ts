@@ -1,5 +1,5 @@
 /**
- * Producer client for video streaming in LeRobot Arena
+ * Producer client for video streaming in RobotHub TransportServer
  */
 
 import { VideoClientCore } from './core.js';
@@ -125,9 +125,9 @@ export class VideoProducer extends VideoClientCore {
 
   private async restartConnectionsWithNewStream(stream: MediaStream): Promise<void> {
     console.info('🔄 Restarting connections with new stream...', { streamId: stream.id });
-    
     // Close all existing connections
-    for (const [consumerId, peerConnection] of this.consumerConnections) {
+    for (const entry of Array.from(this.consumerConnections.entries())) {
+      const [consumerId, peerConnection] = entry;
       peerConnection.close();
       console.info(`🧹 Closed existing connection to consumer ${consumerId}`);
     }
@@ -187,10 +187,10 @@ export class VideoProducer extends VideoClientCore {
     if (!this.connected || !this.websocket) {
       throw new Error('Must be connected to stop streaming');
     }
-
     // Close all consumer connections
-    for (const [consumerId, peerConnection] of this.consumerConnections) {
-      peerConnection.close();
+    for (const consumerId of this.consumerConnections.keys()) {
+      const peerConnection = this.consumerConnections.get(consumerId);
+      peerConnection?.close();
       console.info(`🧹 Closed connection to consumer ${consumerId}`);
     }
     this.consumerConnections.clear();

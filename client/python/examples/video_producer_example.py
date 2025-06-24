@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Basic Video Producer Example
+Video Producer Example - Updated for Workspace API
 
-Demonstrates how to use the LeRobot Arena Python video client for streaming.
+Demonstrates how to use the RobotHub TransportServer Python video client for streaming.
 This example creates animated video content and streams it to the arena server.
 """
 
@@ -80,7 +80,10 @@ async def main():
     )
     logger = logging.getLogger(__name__)
 
-    logger.info("🚀 Starting LeRobot Arena Video Producer Example")
+    logger.info("🚀 Starting RobotHub TransportServer Video Producer Example")
+
+    workspace_id = None
+    room_id = None
 
     try:
         # Create video producer with configuration
@@ -101,10 +104,11 @@ async def main():
         )
 
         # Create a room and connect
-        room_id = await producer.create_room()
+        workspace_id, room_id = await producer.create_room()
         logger.info(f"🏠 Created room: {room_id}")
+        logger.info(f"📁 Workspace ID: {workspace_id}")
 
-        connected = await producer.connect(room_id)
+        connected = await producer.connect(workspace_id, room_id)
         if not connected:
             logger.error("❌ Failed to connect to room")
             return
@@ -117,8 +121,9 @@ async def main():
 
         logger.info("📺 Video streaming started!")
         logger.info(f"🔗 Consumers can connect to room: {room_id}")
+        logger.info(f"📁 Using workspace: {workspace_id}")
         logger.info(
-            f"📱 Use JS consumer: http://localhost:5173/consumer?room={room_id}"
+            f"📱 Use JS consumer: http://localhost:5173/{workspace_id}/video/consumer?room={room_id}"
         )
 
         # Stream for demo duration
@@ -142,7 +147,17 @@ async def main():
         # Clean up
         logger.info("🧹 Cleaning up...")
         if "producer" in locals():
-            await producer.disconnect()
+            if producer.is_connected():
+                await producer.disconnect()
+
+            # Clean up room
+            if workspace_id and room_id:
+                try:
+                    await producer.delete_room(workspace_id, room_id)
+                    logger.info("🗑️ Room cleaned up")
+                except Exception as e:
+                    logger.warning(f"Failed to clean up room: {e}")
+
         logger.info("✅ Video producer example completed")
 
 
@@ -153,12 +168,17 @@ async def camera_example():
 
     logger.info("📷 Starting Camera Video Producer Example")
 
+    workspace_id = None
+    room_id = None
+
     try:
         # Create producer using factory function
         producer = await create_producer_client(base_url="http://localhost:8000")
 
-        room_id = producer.current_room_id
+        workspace_id = producer.workspace_id
+        room_id = producer.room_id
         logger.info(f"🏠 Connected to room: {room_id}")
+        logger.info(f"📁 Workspace ID: {workspace_id}")
 
         # Get available cameras
         cameras = await producer.get_camera_devices()
@@ -176,6 +196,7 @@ async def camera_example():
 
             logger.info("📺 Camera streaming started!")
             logger.info(f"🔗 Consumers can connect to room: {room_id}")
+            logger.info(f"📁 Using workspace: {workspace_id}")
 
             # Stream for demo duration
             await asyncio.sleep(30)
@@ -189,6 +210,12 @@ async def camera_example():
     finally:
         if "producer" in locals():
             await producer.disconnect()
+            if workspace_id and room_id:
+                try:
+                    await producer.delete_room(workspace_id, room_id)
+                    logger.info("🗑️ Room cleaned up")
+                except Exception as e:
+                    logger.warning(f"Failed to clean up room: {e}")
 
 
 async def screen_share_example():
@@ -198,14 +225,19 @@ async def screen_share_example():
 
     logger.info("🖥️  Starting Screen Share Example")
 
+    workspace_id = None
+    room_id = None
+
     try:
         producer = await create_producer_client()
-        room_id = producer.current_room_id
+        workspace_id = producer.workspace_id
+        room_id = producer.room_id
 
         logger.info("🖥️  Starting screen share...")
         await producer.start_screen_share()
 
         logger.info(f"📺 Screen sharing started! Room: {room_id}")
+        logger.info(f"📁 Workspace: {workspace_id}")
 
         # Share for demo duration
         await asyncio.sleep(20)
@@ -215,6 +247,12 @@ async def screen_share_example():
     finally:
         if "producer" in locals():
             await producer.disconnect()
+            if workspace_id and room_id:
+                try:
+                    await producer.delete_room(workspace_id, room_id)
+                    logger.info("🗑️ Room cleaned up")
+                except Exception as e:
+                    logger.warning(f"Failed to clean up room: {e}")
 
 
 if __name__ == "__main__":

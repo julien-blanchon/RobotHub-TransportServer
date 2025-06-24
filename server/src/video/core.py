@@ -49,7 +49,7 @@ from .models import (
 
 logger = logging.getLogger(__name__)
 
-# ============= FRAME CACHE (from old code) =============
+# ============= FRAME CACHE =============
 
 
 @lru_cache(maxsize=8)  # Cache up to 8 different resolutions
@@ -100,7 +100,7 @@ def get_connection_info_frame(
 
 
 def add_frame_hold_indicator(frame: np.ndarray, reuse_count: int) -> np.ndarray:
-    """Add a subtle indicator that this frame is being held (from old code)"""
+    """Add a subtle indicator that this frame is being held"""
     height, width = frame.shape[:2]
 
     # Create a small colored indicator in top-right corner
@@ -125,11 +125,11 @@ def add_frame_hold_indicator(frame: np.ndarray, reuse_count: int) -> np.ndarray:
     return frame
 
 
-# ============= VIDEO FRAME TRACK (from old transport.py) =============
+# ============= VIDEO FRAME TRACK =============
 
 
 class VideoFrameTrack(VideoStreamTrack):
-    """Video track for WebRTC (simplified from old VideoStreamTrack)"""
+    """Video track for WebRTC streaming with recovery support"""
 
     def __init__(self, recovery_config: RecoveryConfig | None = None):
         super().__init__()
@@ -137,7 +137,7 @@ class VideoFrameTrack(VideoStreamTrack):
         self.pts = 0
         self.time_base = 1 / 30  # 30 FPS
 
-        # Frame recovery system (from old code)
+        # Frame recovery system
         self.config = recovery_config or RecoveryConfig()
         self.last_good_frame = None
         self.last_good_frame_time = 0
@@ -149,7 +149,7 @@ class VideoFrameTrack(VideoStreamTrack):
         )
 
     async def recv(self) -> av.VideoFrame:
-        """Get next video frame for WebRTC transmission with smart recovery (from old code)"""
+        """Get next video frame for WebRTC transmission with smart recovery"""
         current_time = time.time() * 1000  # Convert to milliseconds
 
         try:
@@ -195,7 +195,7 @@ class VideoFrameTrack(VideoStreamTrack):
         return frame
 
     def _create_recovery_frame(self, current_time: float):
-        """Create a recovery frame using the configured policy (from old code)"""
+        """Create a recovery frame using the configured policy"""
         # Determine which policy to use
         time_since_last_good = (
             current_time - self.last_good_frame_time
@@ -223,7 +223,7 @@ class VideoFrameTrack(VideoStreamTrack):
         return frame
 
     def _apply_recovery_policy(self, policy: RecoveryPolicy) -> np.ndarray:
-        """Apply the specified recovery policy (from old code)"""
+        """Apply the specified recovery policy"""
         height, width = self.last_frame_dimensions
 
         if policy == RecoveryPolicy.FREEZE_LAST_FRAME:
@@ -312,11 +312,11 @@ class VideoFrameTrack(VideoStreamTrack):
                 pass
 
 
-# ============= WEBRTC CONNECTION (from old transport.py) =============
+# ============= WEBRTC CONNECTION  =============
 
 
 class WebRTCConnection:
-    """WebRTC connection handling both producers and consumers (from old code)"""
+    """WebRTC connection handling both producers and consumers"""
 
     def __init__(
         self,
@@ -336,7 +336,7 @@ class WebRTCConnection:
         self.background_tasks: set[asyncio.Task] = set()
 
     async def initialize(self):
-        """Initialize peer connection (from old code)"""
+        """Initialize peer connection"""
         config = RTCConfiguration(
             iceServers=[
                 RTCIceServer(urls=["stun:stun.l.google.com:19302"]),
@@ -361,7 +361,7 @@ class WebRTCConnection:
         logger.info(f"WebRTC {self.client_id} ICE state: {self.pc.iceConnectionState}")
 
     def _on_track(self, track: av.VideoStream) -> None:
-        """Handle incoming video track from producer (from old code)"""
+        """Handle incoming video track from producer"""
         logger.info(f"WebRTC {self.client_id} received track: {track.kind}")
 
         if track.kind == "video" or track.type == "video":
@@ -372,7 +372,7 @@ class WebRTCConnection:
             self._add_background_task(self._process_incoming_video(track))
 
     async def _process_incoming_video(self, track):
-        """Process video frames from producer (from old code)"""
+        """Process video frames from producer"""
         frame_count = 0
 
         try:
@@ -408,7 +408,7 @@ class WebRTCConnection:
             logger.exception(f"Error processing video track {self.client_id}")
 
     async def handle_offer(self, sdp: str, participant_role: str | None = None) -> str:
-        """Handle WebRTC offer and determine if producer or consumer (from old code)"""
+        """Handle WebRTC offer and determine if producer or consumer"""
         try:
             logger.debug(
                 f"Processing offer for {self.client_id}, SDP length: {len(sdp)}"
@@ -502,7 +502,7 @@ class WebRTCConnection:
             return self.pc.localDescription.sdp
 
     async def add_ice_candidate(self, candidate_data: dict):
-        """Add ICE candidate (from old code)"""
+        """Add ICE candidate"""
         try:
             if candidate_data.get("end"):
                 return
@@ -605,7 +605,7 @@ class VideoRoom:
 
 
 class VideoCore:
-    """Core video system - simplified from old complex system with workspace support"""
+    """Core video system"""
 
     def __init__(self):
         # Nested structure: workspace_id -> room_id -> VideoRoom

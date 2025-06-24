@@ -102,7 +102,7 @@
 </script>
 
 <svelte:head>
-	<title>Workspace {workspaceId} - LeRobot Arena</title>
+	<title>Workspace {workspaceId} - RobotHub TransportServer</title>
 </svelte:head>
 
 <div class="mx-auto max-w-7xl">

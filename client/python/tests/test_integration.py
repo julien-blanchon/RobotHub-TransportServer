@@ -9,18 +9,21 @@ from transport_server_client import (
 
 
 class TestIntegration:
-    """End-to-end integration tests."""
+    """Integration tests for producer-consumer interactions."""
 
     @pytest.mark.asyncio
     async def test_full_producer_consumer_workflow(self):
         """Test complete producer-consumer workflow."""
         # Create producer and room
         producer = await create_producer_client("http://localhost:8000")
+        workspace_id = producer.workspace_id
         room_id = producer.room_id
 
         try:
             # Create consumer and connect to same room
-            consumer = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 # Set up consumer to collect messages
@@ -80,18 +83,23 @@ class TestIntegration:
 
         finally:
             await producer.disconnect()
-            await producer.delete_room(room_id)
+            await producer.delete_room(workspace_id, room_id)
 
     @pytest.mark.asyncio
     async def test_multiple_consumers_same_room(self):
         """Test multiple consumers receiving same messages."""
         producer = await create_producer_client("http://localhost:8000")
+        workspace_id = producer.workspace_id
         room_id = producer.room_id
 
         try:
             # Create multiple consumers
-            consumer1 = await create_consumer_client(room_id, "http://localhost:8000")
-            consumer2 = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer1 = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
+            consumer2 = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 # Set up message collection for both consumers
@@ -128,18 +136,23 @@ class TestIntegration:
 
         finally:
             await producer.disconnect()
-            await producer.delete_room(room_id)
+            await producer.delete_room(workspace_id, room_id)
 
     @pytest.mark.asyncio
     async def test_emergency_stop_propagation(self):
         """Test emergency stop propagation to all consumers."""
         producer = await create_producer_client("http://localhost:8000")
+        workspace_id = producer.workspace_id
         room_id = producer.room_id
 
         try:
             # Create consumers
-            consumer1 = await create_consumer_client(room_id, "http://localhost:8000")
-            consumer2 = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer1 = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
+            consumer2 = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 # Set up error collection
@@ -174,18 +187,20 @@ class TestIntegration:
 
         finally:
             await producer.disconnect()
-            await producer.delete_room(room_id)
+            await producer.delete_room(workspace_id, room_id)
 
     @pytest.mark.asyncio
     async def test_producer_reconnection_workflow(self):
         """Test producer reconnecting and resuming operation."""
         # Create room first
         temp_producer = RoboticsProducer("http://localhost:8000")
-        room_id = await temp_producer.create_room()
+        workspace_id, room_id = await temp_producer.create_room()
 
         try:
             # Create consumer first
-            consumer = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 received_updates = []
@@ -193,7 +208,7 @@ class TestIntegration:
 
                 # Create producer and connect
                 producer = RoboticsProducer("http://localhost:8000")
-                await producer.connect(room_id)
+                await producer.connect(workspace_id, room_id)
 
                 # Send initial update
                 await producer.send_state_sync({"joint1": 10.0})
@@ -203,7 +218,7 @@ class TestIntegration:
                 await producer.disconnect()
 
                 # Reconnect producer
-                await producer.connect(room_id)
+                await producer.connect(workspace_id, room_id)
 
                 # Send another update
                 await producer.send_state_sync({"joint1": 20.0})
@@ -218,12 +233,13 @@ class TestIntegration:
                 await consumer.disconnect()
 
         finally:
-            await temp_producer.delete_room(room_id)
+            await temp_producer.delete_room(workspace_id, room_id)
 
     @pytest.mark.asyncio
     async def test_consumer_late_join(self):
         """Test consumer joining room after producer has sent updates."""
         producer = await create_producer_client("http://localhost:8000")
+        workspace_id = producer.workspace_id
         room_id = producer.room_id
 
         try:
@@ -235,7 +251,9 @@ class TestIntegration:
             await asyncio.sleep(0.1)
 
             # Now consumer joins
-            consumer = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 # Consumer should be able to get current state
@@ -250,16 +268,19 @@ class TestIntegration:
 
         finally:
             await producer.disconnect()
-            await producer.delete_room(room_id)
+            await producer.delete_room(workspace_id, room_id)
 
     @pytest.mark.asyncio
     async def test_room_cleanup_on_producer_disconnect(self):
         """Test room state when producer disconnects."""
         producer = await create_producer_client("http://localhost:8000")
+        workspace_id = producer.workspace_id
         room_id = producer.room_id
 
         try:
-            consumer = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 # Send some state
@@ -284,16 +305,19 @@ class TestIntegration:
         finally:
             # Clean up room manually since producer disconnected
             temp_producer = RoboticsProducer("http://localhost:8000")
-            await temp_producer.delete_room(room_id)
+            await temp_producer.delete_room(workspace_id, room_id)
 
     @pytest.mark.asyncio
     async def test_high_frequency_updates(self):
         """Test handling high frequency updates."""
         producer = await create_producer_client("http://localhost:8000")
+        workspace_id = producer.workspace_id
         room_id = producer.room_id
 
         try:
-            consumer = await create_consumer_client(room_id, "http://localhost:8000")
+            consumer = await create_consumer_client(
+                workspace_id, room_id, "http://localhost:8000"
+            )
 
             try:
                 received_updates = []
@@ -324,4 +348,4 @@ class TestIntegration:
 
         finally:
             await producer.disconnect()
-            await producer.delete_room(room_id)
+            await producer.delete_room(workspace_id, room_id)

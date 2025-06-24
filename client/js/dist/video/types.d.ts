@@ -1,5 +1,5 @@
 /**
- * Type definitions for LeRobot Arena Video Client
+ * Type definitions for RobotHub TransportServer Video Client
  * ✅ Fully synchronized with server-side models.py
  */
 export type ParticipantRole = 'producer' | 'consumer';

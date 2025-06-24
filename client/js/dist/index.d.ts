@@ -1,5 +1,5 @@
 /**
- * LeRobot Arena Client Library - TypeScript/JavaScript
+ * RobotHub TransportServer Client Library - TypeScript/JavaScript
  *
  * Main entry point for the robotics client library.
  */

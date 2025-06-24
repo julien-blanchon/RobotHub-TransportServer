@@ -1,5 +1,5 @@
 /**
- * Producer client for controlling robots in LeRobot Arena
+ * Producer client for controlling robots in RobotHub TransportServer
  */
 
 import { RoboticsClientCore } from './core.js';

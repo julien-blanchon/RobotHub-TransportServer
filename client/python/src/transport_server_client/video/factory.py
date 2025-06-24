@@ -1,5 +1,5 @@
 """
-Factory functions for creating LeRobot Arena video clients
+Factory functions for creating RobotHub TransportServer video clients
 """
 
 from .consumer import VideoConsumer
@@ -17,7 +17,8 @@ def create_client(
         return VideoProducer(base_url, options)
     if role == ParticipantRole.CONSUMER:
         return VideoConsumer(base_url, options)
-    raise ValueError(f"Invalid role: {role}. Must be 'producer' or 'consumer'")
+    msg = f"Invalid role: {role}. Must be 'producer' or 'consumer'"
+    raise ValueError(msg)
 
 
 async def create_producer_client(
@@ -34,7 +35,8 @@ async def create_producer_client(
     connected = await producer.connect(workspace_id, room_id, participant_id)
 
     if not connected:
-        raise ValueError("Failed to connect as video producer")
+        msg = "Failed to connect as video producer"
+        raise ValueError(msg)
 
     return producer
 
@@ -51,6 +53,7 @@ async def create_consumer_client(
     connected = await consumer.connect(workspace_id, room_id, participant_id)
 
     if not connected:
-        raise ValueError("Failed to connect as video consumer")
+        msg = "Failed to connect as video consumer"
+        raise ValueError(msg)
 
     return consumer

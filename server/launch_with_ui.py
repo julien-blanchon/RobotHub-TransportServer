@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 # Create a new FastAPI app that combines API and frontend
 app = FastAPI(
-    title="LeRobot Arena Transport Server with UI",
-    description="Combined API and web interface for LeRobot Arena transport server",
+    title="RobotHub TransportServer Transport Server with UI",
+    description="Combined API and web interface for RobotHub TransportServer transport server",
     version="2.0.0",
 )
 
@@ -88,7 +88,7 @@ if serve_frontend:
         @app.get("/")
         async def no_frontend():
             return {
-                "message": "LeRobot Arena Transport Server",
+                "message": "RobotHub TransportServer Transport Server",
                 "frontend": "not available",
                 "api": "available at /api/",
                 "docs": "available at /api/docs",
@@ -99,7 +99,7 @@ else:
     @app.get("/")
     async def api_only():
         return {
-            "message": "LeRobot Arena Transport Server - API Only",
+            "message": "RobotHub TransportServer Transport Server - API Only",
             "api": "available at /api/",
             "docs": "available at /api/docs",
         }
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     port = int(os.getenv("PORT", 7860))
     host = os.getenv("HOST", "0.0.0.0")
 
-    logger.info("🤖 Starting LeRobot Arena Combined Server...")
+    logger.info("🤖 Starting RobotHub TransportServer Combined Server...")
     logger.info(f"   - API available at: http://{host}:{port}/api/")
     logger.info(f"   - API docs at: http://{host}:{port}/api/docs")
 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     else:
         logger.info("   - Frontend disabled (set SERVE_FRONTEND=true to enable)")
 
-    print(f"🤖 Starting LeRobot Arena Combined Server on {host}:{port}")
+    print(f"🤖 Starting RobotHub TransportServer Combined Server on {host}:{port}")
 
     uvicorn.run(
         "launch_with_ui:app",

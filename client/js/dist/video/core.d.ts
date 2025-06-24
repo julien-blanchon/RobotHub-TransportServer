@@ -1,5 +1,5 @@
 /**
- * Core video client for LeRobot Arena
+ * Core video client for RobotHub TransportServer
  * Base class providing REST API, WebSocket, and WebRTC functionality
  */
 import { EventEmitter } from 'eventemitter3';

@@ -59,7 +59,7 @@
 	// Load recent workspaces from localStorage
 	function loadRecentWorkspaces() {
 		try {
-			const stored = localStorage.getItem('lerobot-arena-workspaces');
+			const stored = localStorage.getItem('robothub-transport-server-workspaces');
 			if (stored) {
 				recentWorkspaces = JSON.parse(stored);
 			}
@@ -73,7 +73,7 @@
 		const updated = [workspaceId, ...recentWorkspaces.filter(id => id !== workspaceId)].slice(0, 10);
 		recentWorkspaces = updated;
 		try {
-			localStorage.setItem('lerobot-arena-workspaces', JSON.stringify(updated));
+			localStorage.setItem('robothub-transport-server-workspaces', JSON.stringify(updated));
 		} catch (err) {
 			console.warn('Failed to save recent workspaces:', err);
 		}
@@ -108,7 +108,7 @@
 	function removeRecentWorkspace(workspaceId: string) {
 		recentWorkspaces = recentWorkspaces.filter(id => id !== workspaceId);
 		try {
-			localStorage.setItem('lerobot-arena-workspaces', JSON.stringify(recentWorkspaces));
+			localStorage.setItem('robothub-transport-server-workspaces', JSON.stringify(recentWorkspaces));
 		} catch (err) {
 			console.warn('Failed to save recent workspaces:', err);
 		}
@@ -124,13 +124,13 @@
 </script>
 
 <svelte:head>
-	<title>LeRobot Arena - Workspace Selection</title>
+	<title>RobotHub TransportServer - Workspace Selection</title>
 </svelte:head>
 
 <div class="mx-auto max-w-4xl p-4">
 	<!-- Header -->
 	<div class="mb-8 text-center">
-		<h1 class="font-mono text-3xl font-bold text-gray-900">🤖 LeRobot Arena</h1>
+		<h1 class="font-mono text-3xl font-bold text-gray-900">🤖 RobotHub TransportServer</h1>
 		<p class="mt-2 font-mono text-lg text-gray-600">
 			Real-time robotics control and monitoring platform
 		</p>

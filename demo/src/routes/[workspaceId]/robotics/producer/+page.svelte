@@ -253,7 +253,7 @@
 </script>
 
 <svelte:head>
-	<title>Robotics Producer{roomId ? ` - Room ${roomId}` : ''} - Workspace {workspaceId} - LeRobot Arena</title>
+	<title>Robotics Producer{roomId ? ` - Room ${roomId}` : ''} - Workspace {workspaceId} - RobotHub TransportServer</title>
 </svelte:head>
 
 <div class="mx-auto max-w-6xl space-y-6">

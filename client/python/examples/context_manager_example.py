@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Context Manager Example - LeRobot Arena
+Context Manager Example - RobotHub TransportServer
 
 This example demonstrates:
 - Using clients as context managers for automatic cleanup
@@ -30,10 +30,11 @@ async def basic_context_manager_example():
 
     # Using producer as context manager
     async with RoboticsProducer("http://localhost:8000") as producer:
-        room_id = await producer.create_room()
+        workspace_id, room_id = await producer.create_room()
         logger.info(f"Created room: {room_id}")
+        logger.info(f"Workspace ID: {workspace_id}")
 
-        await producer.connect(room_id)
+        await producer.connect(workspace_id, room_id)
         logger.info("Producer connected")
 
         # Send some data
@@ -47,6 +48,9 @@ async def basic_context_manager_example():
         except Exception as e:
             logger.warning(f"Handled exception: {e}")
 
+        # Clean up room before context exit
+        await producer.delete_room(workspace_id, room_id)
+
     # Producer is automatically disconnected here
     logger.info("Producer automatically disconnected")
 
@@ -57,12 +61,16 @@ async def factory_function_example():
 
     # Create and auto-connect producer with factory function
     producer = await create_producer_client("http://localhost:8000")
+    workspace_id = producer.workspace_id
     room_id = producer.room_id
     logger.info(f"Producer auto-connected to room: {room_id}")
+    logger.info(f"Workspace ID: {workspace_id}")
 
     try:
         # Create and auto-connect consumer
-        consumer = await create_consumer_client(room_id, "http://localhost:8000")
+        consumer = await create_consumer_client(
+            workspace_id, room_id, "http://localhost:8000"
+        )
         logger.info("Consumer auto-connected")
 
         # Set up callback
@@ -81,8 +89,9 @@ async def factory_function_example():
 
     finally:
         # Manual cleanup for factory-created clients
-        await producer.disconnect()
         await consumer.disconnect()
+        await producer.disconnect()
+        await producer.delete_room(workspace_id, room_id)
         logger.info("Manual cleanup completed")
 
 
@@ -90,10 +99,13 @@ async def exception_handling_example():
     """Example showing exception handling with context managers."""
     logger.info("\n=== Exception Handling Example ===")
 
+    workspace_id = None
+    room_id = None
+
     try:
         async with RoboticsProducer("http://localhost:8000") as producer:
-            room_id = await producer.create_room()
-            await producer.connect(room_id)
+            workspace_id, room_id = await producer.create_room()
+            await producer.connect(workspace_id, room_id)
 
             # Simulate some work that might fail
             for i in range(5):
@@ -110,6 +122,15 @@ async def exception_handling_example():
         logger.exception(f"Caught expected error: {e}")
         logger.info("Context manager still ensures cleanup")
 
+    # Clean up room after exception
+    if workspace_id and room_id:
+        try:
+            temp_producer = RoboticsProducer("http://localhost:8000")
+            await temp_producer.delete_room(workspace_id, room_id)
+            logger.info("Room cleaned up after exception")
+        except Exception as e:
+            logger.warning(f"Failed to clean up room: {e}")
+
     logger.info("Exception handling example completed")
 
 
@@ -118,13 +139,16 @@ async def multiple_clients_example():
     logger.info("\n=== Multiple Clients Example ===")
 
     # Create room first
+    workspace_id = None
+    room_id = None
     async with RoboticsProducer("http://localhost:8000") as setup_producer:
-        room_id = await setup_producer.create_room()
+        workspace_id, room_id = await setup_producer.create_room()
         logger.info(f"Setup room: {room_id}")
+        logger.info(f"Workspace ID: {workspace_id}")
 
     # Now use multiple clients in the same room
     async with RoboticsProducer("http://localhost:8000") as producer:
-        await producer.connect(room_id)
+        await producer.connect(workspace_id, room_id)
 
         # Use multiple consumers
         consumers = []
@@ -134,7 +158,7 @@ async def multiple_clients_example():
                 consumer = RoboticsConsumer("http://localhost:8000")
                 consumers.append(consumer)
                 # Note: We're not using context manager here to show manual management
-                await consumer.connect(room_id, f"consumer-{i}")
+                await consumer.connect(workspace_id, room_id, f"consumer-{i}")
 
             logger.info(f"Connected {len(consumers)} consumers")
 
@@ -155,12 +179,21 @@ async def multiple_clients_example():
                 await consumer.disconnect()
                 logger.info(f"Disconnected consumer-{i}")
 
+    # Clean up room
+    if workspace_id and room_id:
+        try:
+            temp_producer = RoboticsProducer("http://localhost:8000")
+            await temp_producer.delete_room(workspace_id, room_id)
+            logger.info("Room cleaned up")
+        except Exception as e:
+            logger.warning(f"Failed to clean up room: {e}")
+
     logger.info("Multiple clients example completed")
 
 
 async def main():
     """Run all context manager examples."""
-    logger.info("🤖 LeRobot Arena Context Manager Examples 🤖")
+    logger.info("🤖 RobotHub TransportServer Context Manager Examples 🤖")
 
     try:
         await basic_context_manager_example()

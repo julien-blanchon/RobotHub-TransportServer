@@ -236,12 +236,13 @@ async def main():
     try:
         # Step 1: Create our own room
         logger.info("🏗️ Creating video room...")
-        room_id = await consumer.create_room("consumer-first-test")
+        workspace_id, room_id = await consumer.create_room("consumer-first-test")
         logger.info(f"✅ Created room: {room_id}")
+        logger.info(f"📁 Workspace ID: {workspace_id}")
 
         # Step 2: Connect as consumer
         logger.info("🔌 Connecting to room as consumer...")
-        connected = await consumer.connect(room_id)
+        connected = await consumer.connect(workspace_id, room_id)
 
         if not connected:
             logger.error("❌ Failed to connect to room")
@@ -256,7 +257,8 @@ async def main():
         # Step 4: Wait for producer and record
         logger.info("⏳ Waiting for producer to join and start streaming...")
         logger.info(f"   Room ID: {room_id}")
-        logger.info("   (Start a producer with this room ID to begin recording)")
+        logger.info(f"   Workspace ID: {workspace_id}")
+        logger.info("   (Start a producer with these IDs to begin recording)")
 
         # Wait for recording to complete or timeout
         timeout = 300  # 5 minutes timeout
@@ -301,6 +303,15 @@ async def main():
         try:
             await consumer.stop_receiving()
             await consumer.disconnect()
+
+            # Clean up room if we created it
+            if "workspace_id" in locals() and "room_id" in locals():
+                try:
+                    await consumer.delete_room(workspace_id, room_id)
+                    logger.info("🗑️ Room cleaned up")
+                except Exception as e:
+                    logger.warning(f"Failed to clean up room: {e}")
+
             logger.info("👋 Consumer disconnected successfully")
         except Exception as e:
             logger.exception(f"Error during cleanup: {e}")

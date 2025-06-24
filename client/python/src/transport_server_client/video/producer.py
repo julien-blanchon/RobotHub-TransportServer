@@ -1,5 +1,5 @@
 """
-Producer client for video streaming in LeRobot Arena
+Producer client for video streaming in RobotHub TransportServer
 """
 
 import asyncio
@@ -46,7 +46,8 @@ class CameraVideoTrack(VideoStreamTrack):
     async def recv(self) -> Any:
         """Receive the next video frame"""
         if self.cap is None:
-            raise ValueError("Camera not initialized")
+            msg = "Camera not initialized"
+            raise ValueError(msg)
 
         # Calculate timing for consistent frame rate
         start_time = time.time()
@@ -54,7 +55,8 @@ class CameraVideoTrack(VideoStreamTrack):
         # Capture frame
         ret, frame = self.cap.read()
         if not ret:
-            raise ValueError("Failed to capture frame from camera")
+            msg = "Failed to capture frame from camera"
+            raise ValueError(msg)
 
         # Convert BGR to RGB
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -89,7 +91,8 @@ class CameraVideoTrack(VideoStreamTrack):
 
         self.cap = cv2.VideoCapture(self.device_id)
         if not self.cap.isOpened():
-            raise ValueError(f"Cannot open camera device {self.device_id}")
+            msg = f"Cannot open camera device {self.device_id}"
+            raise ValueError(msg)
 
         # Configure camera
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution["width"])
@@ -163,7 +166,7 @@ class CustomVideoTrack(VideoStreamTrack):
             return frame
 
         except Exception as e:
-            logger.error(f"Error in custom video track recv: {e}")
+            logger.exception(f"Error in custom video track recv: {e}")
             # Return black frame on any error
             black_frame = np.zeros((480, 640, 3), dtype=np.uint8)
             frame = av.VideoFrame.from_ndarray(black_frame, format="rgb24")
@@ -181,7 +184,7 @@ class CustomVideoTrack(VideoStreamTrack):
 
 
 class VideoProducer(VideoClientCore):
-    """Producer client for video streaming in LeRobot Arena"""
+    """Producer client for video streaming in RobotHub TransportServer"""
 
     def __init__(
         self,
@@ -232,7 +235,7 @@ class VideoProducer(VideoClientCore):
                     logger.info(f"🔄 Connecting to existing consumer {consumer_id}")
                     await self.initiate_webrtc_with_consumer(consumer_id)
         except Exception as e:
-            logger.error(f"Failed to connect to existing consumers: {e}")
+            logger.exception(f"Failed to connect to existing consumers: {e}")
 
     async def _restart_connections_with_new_stream(self) -> None:
         """Restart all connections with new stream tracks"""
@@ -254,7 +257,7 @@ class VideoProducer(VideoClientCore):
                     )
                     await self.initiate_webrtc_with_consumer(consumer_id)
         except Exception as e:
-            logger.error(f"Failed to restart connections: {e}")
+            logger.exception(f"Failed to restart connections: {e}")
 
     def _create_peer_connection_for_consumer(self, consumer_id: str) -> Any:
         """Create a peer connection for a specific consumer"""
@@ -276,7 +279,7 @@ class VideoProducer(VideoClientCore):
             state = peer_connection.connectionState
             logger.info(f"🔌 WebRTC connection state for {consumer_id}: {state}")
 
-            if state in ["failed", "disconnected"]:
+            if state in {"failed", "disconnected"}:
                 logger.warning(
                     f"⚠️ Connection to {consumer_id} failed, attempting restart..."
                 )
@@ -323,7 +326,8 @@ class VideoProducer(VideoClientCore):
     ) -> Any:
         """Start camera streaming"""
         if not self.connected:
-            raise ValueError("Must be connected to start camera")
+            msg = "Must be connected to start camera"
+            raise ValueError(msg)
 
         # Create camera track
         resolution = None
@@ -358,7 +362,8 @@ class VideoProducer(VideoClientCore):
     async def start_screen_share(self) -> Any:
         """Start screen sharing (placeholder - would need screen capture implementation)"""
         if not self.connected:
-            raise ValueError("Must be connected to start screen share")
+            msg = "Must be connected to start screen share"
+            raise ValueError(msg)
 
         # For now, create a simple pattern as a placeholder
         async def screen_frame_source() -> np.ndarray | None:
@@ -394,7 +399,8 @@ class VideoProducer(VideoClientCore):
     ) -> Any:
         """Start streaming from a custom frame source"""
         if not self.connected:
-            raise ValueError("Must be connected to start custom stream")
+            msg = "Must be connected to start custom stream"
+            raise ValueError(msg)
 
         # Create custom track
         self.custom_track = CustomVideoTrack(frame_source, 30)
@@ -413,7 +419,8 @@ class VideoProducer(VideoClientCore):
     async def stop_streaming(self) -> None:
         """Stop video streaming"""
         if not self.connected or not self.websocket:
-            raise ValueError("Must be connected to stop streaming")
+            msg = "Must be connected to stop streaming"
+            raise ValueError(msg)
 
         # Close all consumer connections
         for consumer_id, peer_connection in list(self.consumer_connections.items()):
@@ -439,7 +446,8 @@ class VideoProducer(VideoClientCore):
     async def update_video_config(self, config: VideoConfig) -> None:
         """Update video configuration"""
         if not self.connected or not self.websocket:
-            raise ValueError("Must be connected to update video config")
+            msg = "Must be connected to update video config"
+            raise ValueError(msg)
 
         message = {
             "type": "video_config_update",
@@ -452,7 +460,8 @@ class VideoProducer(VideoClientCore):
     async def send_emergency_stop(self, reason: str = "Emergency stop") -> None:
         """Send emergency stop signal"""
         if not self.connected or not self.websocket:
-            raise ValueError("Must be connected to send emergency stop")
+            msg = "Must be connected to send emergency stop"
+            raise ValueError(msg)
 
         message = {"type": "emergency_stop", "reason": reason, "timestamp": time.time()}
 
@@ -498,7 +507,9 @@ class VideoProducer(VideoClientCore):
 
             logger.info(f"✅ WebRTC offer sent to consumer {consumer_id}")
         except Exception as e:
-            logger.error(f"Failed to initiate WebRTC with consumer {consumer_id}: {e}")
+            logger.exception(
+                f"Failed to initiate WebRTC with consumer {consumer_id}: {e}"
+            )
 
     async def handle_webrtc_answer(
         self, answer_data: dict[str, Any], from_consumer: str
@@ -522,7 +533,9 @@ class VideoProducer(VideoClientCore):
                 f"✅ WebRTC negotiation completed with consumer {from_consumer}"
             )
         except Exception as e:
-            logger.error(f"Failed to handle WebRTC answer from {from_consumer}: {e}")
+            logger.exception(
+                f"Failed to handle WebRTC answer from {from_consumer}: {e}"
+            )
             if self.on_error_callback:
                 self.on_error_callback(f"Failed to handle WebRTC answer: {e}")
 
@@ -566,7 +579,7 @@ class VideoProducer(VideoClientCore):
 
             logger.info(f"✅ WebRTC ICE handled with consumer {from_consumer}")
         except Exception as e:
-            logger.error(f"Failed to handle WebRTC ICE from {from_consumer}: {e}")
+            logger.exception(f"Failed to handle WebRTC ICE from {from_consumer}: {e}")
             if self.on_error_callback:
                 self.on_error_callback(f"Failed to handle WebRTC ICE: {e}")
 
@@ -698,7 +711,8 @@ class VideoProducer(VideoClientCore):
         connected = await producer.connect(workspace_id, room_id, participant_id)
 
         if not connected:
-            raise ValueError("Failed to connect as video producer")
+            msg = "Failed to connect as video producer"
+            raise ValueError(msg)
 
         return producer
 

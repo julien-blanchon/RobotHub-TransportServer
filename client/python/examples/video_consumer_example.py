@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Video Consumer Example - Fixed Version
+Video Consumer Example - Updated for Workspace API
 
 This example demonstrates how to connect as a video consumer and receive
-video frames from a producer in the LeRobot Arena.
+video frames from a producer in the RobotHub TransportServer.
 """
 
 import asyncio
@@ -86,14 +86,23 @@ class VideoFrameHandler:
 
 async def main():
     """Main consumer example"""
+    # Get connection details from user
+    print("Enter video room connection details:")
+    workspace_id = input("Workspace ID: ").strip()
+    room_id = input("Room ID (or press Enter for 'webcam'): ").strip() or "webcam"
+
+    if not workspace_id:
+        logger.error("Workspace ID is required!")
+        return
+
     # Configuration
-    room_id = "webcam"  # Use the test webcam room
     base_url = "http://localhost:8000"
     duration = 60  # Run for 60 seconds
     save_frames = True  # Save some frames as proof
 
-    logger.info("🎬 Video Consumer Example - Fixed Version")
+    logger.info("🎬 Video Consumer Example - Updated for Workspace API")
     logger.info("=" * 50)
+    logger.info(f"Workspace ID: {workspace_id}")
     logger.info(f"Room ID: {room_id}")
     logger.info(f"Server: {base_url}")
     logger.info(f"Duration: {duration} seconds")
@@ -108,12 +117,24 @@ async def main():
     # Set up event handlers
     consumer.on_frame_update(frame_handler.handle_frame)
 
+    def on_stream_started(config, producer_id):
+        logger.info(f"🚀 Stream started by producer {producer_id}")
+        logger.info(f"   Config: {config}")
+
+    def on_stream_stopped(producer_id, reason):
+        logger.info(f"⏹️ Stream stopped by producer {producer_id}")
+        if reason:
+            logger.info(f"   Reason: {reason}")
+
+    consumer.on_stream_started(on_stream_started)
+    consumer.on_stream_stopped(on_stream_stopped)
+
     # Track connection progress
     connection_events = []
 
     try:
         logger.info("🔌 Connecting to room...")
-        connected = await consumer.connect(room_id)
+        connected = await consumer.connect(workspace_id, room_id)
 
         if not connected:
             logger.error("❌ Failed to connect to room")
@@ -181,6 +202,7 @@ async def main():
         logger.info("🧹 Cleaning up...")
         try:
             await consumer.stop_receiving()
+            await consumer.disconnect()
             logger.info("👋 Consumer stopped successfully")
         except Exception as e:
             logger.exception(f"Error during cleanup: {e}")

@@ -1062,7 +1062,8 @@ class VideoProducer extends VideoClientCore {
   }
   async restartConnectionsWithNewStream(stream) {
     console.info("\uD83D\uDD04 Restarting connections with new stream...", { streamId: stream.id });
-    for (const [consumerId, peerConnection] of this.consumerConnections) {
+    for (const entry of Array.from(this.consumerConnections.entries())) {
+      const [consumerId, peerConnection] = entry;
       peerConnection.close();
       console.info(`\uD83E\uDDF9 Closed existing connection to consumer ${consumerId}`);
     }
@@ -1103,8 +1104,9 @@ class VideoProducer extends VideoClientCore {
     if (!this.connected || !this.websocket) {
       throw new Error("Must be connected to stop streaming");
     }
-    for (const [consumerId, peerConnection] of this.consumerConnections) {
-      peerConnection.close();
+    for (const consumerId of this.consumerConnections.keys()) {
+      const peerConnection = this.consumerConnections.get(consumerId);
+      peerConnection?.close();
       console.info(`\uD83E\uDDF9 Closed connection to consumer ${consumerId}`);
     }
     this.consumerConnections.clear();
@@ -1617,5 +1619,5 @@ export {
   VERSION
 };
 
-//# debugId=4E9BF8BBC67AF91F64756E2164756E21
+//# debugId=DEA97CEBB2EADB0264756E2164756E21
 //# sourceMappingURL=index.js.map

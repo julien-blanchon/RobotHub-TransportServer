@@ -1,5 +1,5 @@
 """
-Consumer client for receiving video streams in LeRobot Arena
+Consumer client for receiving video streams in RobotHub TransportServer
 """
 
 import asyncio
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class VideoConsumer(VideoClientCore):
-    """Consumer client for receiving video streams in LeRobot Arena"""
+    """Consumer client for receiving video streams in RobotHub TransportServer"""
 
     def __init__(
         self,
@@ -87,7 +87,8 @@ class VideoConsumer(VideoClientCore):
     async def start_receiving(self) -> None:
         """Start receiving video stream"""
         if not self.connected:
-            raise ValueError("Must be connected to start receiving")
+            msg = "Must be connected to start receiving"
+            raise ValueError(msg)
 
         # Reset WebRTC state
         self.has_remote_description = False
@@ -174,7 +175,7 @@ class VideoConsumer(VideoClientCore):
 
             logger.info("✅ WebRTC negotiation completed from consumer side")
         except Exception as e:
-            logger.error(f"Failed to handle WebRTC offer: {e}")
+            logger.exception(f"Failed to handle WebRTC offer: {e}")
             if self.on_error_callback:
                 self.on_error_callback(f"Failed to handle WebRTC offer: {e}")
 
@@ -202,7 +203,7 @@ class VideoConsumer(VideoClientCore):
             logger.info("✅ Connection restart completed")
 
         except Exception as e:
-            logger.error(f"❌ Error restarting connection: {e}")
+            logger.exception(f"❌ Error restarting connection: {e}")
             # Continue anyway - we'll try to create a new connection
 
     async def handle_webrtc_ice(
@@ -252,7 +253,7 @@ class VideoConsumer(VideoClientCore):
 
             logger.info(f"✅ WebRTC ICE handled from producer {from_producer}")
         except Exception as e:
-            logger.error(f"Failed to handle WebRTC ICE from {from_producer}: {e}")
+            logger.exception(f"Failed to handle WebRTC ICE from {from_producer}: {e}")
             if self.on_error_callback:
                 self.on_error_callback(f"Failed to handle WebRTC ICE: {e}")
 
@@ -276,7 +277,7 @@ class VideoConsumer(VideoClientCore):
                         f"✅ Processed queued ICE candidate from {from_producer}"
                     )
             except Exception as e:
-                logger.error(
+                logger.exception(
                     f"Failed to process queued ICE candidate from {item.get('from_producer', 'unknown')}: {e}"
                 )
 
@@ -516,7 +517,7 @@ class VideoConsumer(VideoClientCore):
                     )
                     consecutive_errors += 1
                     if consecutive_errors >= max_consecutive_errors:
-                        logger.error(
+                        logger.exception(
                             "❌ Too many consecutive frame timeouts - stopping frame reading"
                         )
                         break
@@ -531,7 +532,7 @@ class VideoConsumer(VideoClientCore):
                     )
 
                     if consecutive_errors >= max_consecutive_errors:
-                        logger.error(
+                        logger.exception(
                             f"❌ Too many consecutive frame errors ({consecutive_errors}) - stopping frame reading"
                         )
                         break
@@ -540,7 +541,7 @@ class VideoConsumer(VideoClientCore):
                     continue
 
         except Exception as e:
-            logger.error(f"❌ Fatal error in frame reading loop: {e}")
+            logger.exception(f"❌ Fatal error in frame reading loop: {e}")
 
         finally:
             logger.info(
@@ -595,7 +596,8 @@ class VideoConsumer(VideoClientCore):
         connected = await consumer.connect(workspace_id, room_id, participant_id)
 
         if not connected:
-            raise ValueError("Failed to connect as video consumer")
+            msg = "Failed to connect as video consumer"
+            raise ValueError(msg)
 
         return consumer
 

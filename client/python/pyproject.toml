@@ -1,7 +1,7 @@
 [project]
 name = "robothub_transport_server_client"
 version = "1.0.0"
-description = "Python client for robothub transport server"
+description = "Python client for RobotHub TransportServer"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -26,3 +26,10 @@ packages = ["src/transport_server_client"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

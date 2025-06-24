@@ -1,5 +1,5 @@
 /**
- * Consumer client for receiving video streams in LeRobot Arena
+ * Consumer client for receiving video streams in RobotHub TransportServer
  */
 
 import { VideoClientCore } from './core.js';

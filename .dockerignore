@@ -1,4 +1,3 @@
-/* # Node.js dependencies and cache */
 **/node_modules/
 **/.npm
 **/npm-debug.log*
@@ -6,26 +5,25 @@
 **/yarn-error.log*
 **/.pnpm-debug.log*
 
-# Bun runtime files
+
 **/.bun
 
-# Build outputs and generated files
+
 **/dist/
 **/build/
 **/.next/
 **/.svelte-kit/
 
-# Environment and development files
+
 **/.env
 **/.env.local
 **/.env.development.local
 **/.env.test.local
 **/.env.production.local
 
-# Python cache and bytecode
+
 **/__pycache__/
 **/*.py[cod]
-**/*$py.class
 **/*.so
 **/.Python
 **/develop-eggs/
@@ -43,33 +41,33 @@
 **/*.egg
 **/MANIFEST
 
-# Virtual environments
+
 **/.venv/
 **/venv/
 **/ENV/
 **/env/
 
-# IDEs and editors
+
 **/.vscode/
 **/.idea/
 **/*.swp
 **/*.swo
 **/*~
 
-# Operating system files
+
 **/.DS_Store
 **/Thumbs.db
 
-# Version control
+
 **/.git/
 **/.gitignore
 
-# Docker related files
+
 **/Dockerfile*
 **/docker-compose*
 **/.dockerignore
 
-# Logs and temporary files
+
 **/logs/
 **/*.log
 **/server.log
@@ -79,25 +77,22 @@
 **/.pytest_cache/
 **/.mypy_cache/
 
-# Test files
+
 **/test*/
 **/tests/
 **/*test.py
 **/*_test.py
 
-# Lock files for other package managers
+
 **/yarn.lock
 **/package-lock.json
 **/poetry.lock
 **/Pipfile.lock
 
-# Documentation files
+
 **/README.md
 **/CHANGELOG.md
 **/docs/
 
-# CI/CD configuration files
 **/.github/
 **/.gitlab-ci.yml
-**/azure-pipelines.yml
-**/.circleci/ 

@@ -1,5 +1,5 @@
 /**
- * Producer client for video streaming in LeRobot Arena
+ * Producer client for video streaming in RobotHub TransportServer
  */
 import { VideoClientCore } from './core.js';
 import type { WebSocketMessage, ClientOptions, VideoConfig } from './types.js';

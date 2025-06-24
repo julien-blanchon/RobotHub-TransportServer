@@ -1,5 +1,5 @@
 /**
- * Consumer client for receiving robot commands in LeRobot Arena
+ * Consumer client for receiving robot commands in RobotHub TransportServer
  */
 
 import { RoboticsClientCore } from './core.js';

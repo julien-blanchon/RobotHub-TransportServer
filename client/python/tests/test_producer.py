@@ -10,12 +10,14 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_producer_connection(self, producer, test_room):
         """Test basic producer connection."""
+        workspace_id, room_id = test_room
         assert not producer.is_connected()
 
-        success = await producer.connect(test_room)
+        success = await producer.connect(workspace_id, room_id)
         assert success is True
         assert producer.is_connected()
-        assert producer.room_id == test_room
+        assert producer.room_id == room_id
+        assert producer.workspace_id == workspace_id
         assert producer.role == "producer"
 
         await producer.disconnect()
@@ -24,11 +26,12 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_producer_connection_info(self, connected_producer):
         """Test getting connection information."""
-        producer, room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         info = producer.get_connection_info()
         assert info["connected"] is True
         assert info["room_id"] == room_id
+        assert info["workspace_id"] == workspace_id
         assert info["role"] == "producer"
         assert info["participant_id"] is not None
         assert info["base_url"] == "http://localhost:8000"
@@ -36,7 +39,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_joint_update(self, connected_producer):
         """Test sending joint updates."""
-        producer, _room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         joints = [
             {"name": "shoulder", "value": 45.0},
@@ -50,7 +53,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_state_sync(self, connected_producer):
         """Test sending state synchronization."""
-        producer, _room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         state = {"shoulder": 45.0, "elbow": -20.0, "wrist": 10.0}
 
@@ -60,7 +63,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_emergency_stop(self, connected_producer):
         """Test sending emergency stop."""
-        producer, _room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         # Should not raise an exception
         await producer.send_emergency_stop("Test emergency stop")
@@ -69,7 +72,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_heartbeat(self, connected_producer):
         """Test sending heartbeat."""
-        producer, _room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         # Should not raise an exception
         await producer.send_heartbeat()
@@ -77,6 +80,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_producer_callbacks(self, producer, test_room):
         """Test producer event callbacks."""
+        workspace_id, room_id = test_room
         connected_called = False
         disconnected_called = False
         error_called = False
@@ -101,7 +105,7 @@ class TestRoboticsProducer:
         producer.on_error(on_error)
 
         # Connect and disconnect
-        await producer.connect(test_room)
+        await producer.connect(workspace_id, room_id)
         await asyncio.sleep(0.1)  # Give callbacks time to execute
         assert connected_called is True
 
@@ -126,27 +130,31 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_multiple_connections(self, producer, test_room):
         """Test connecting to multiple rooms sequentially."""
+        workspace_id, room_id = test_room
         # Connect to first room
-        await producer.connect(test_room)
-        assert producer.room_id == test_room
+        await producer.connect(workspace_id, room_id)
+        assert producer.room_id == room_id
+        assert producer.workspace_id == workspace_id
 
         # Create second room
-        room_id_2 = await producer.create_room()
+        workspace_id_2, room_id_2 = await producer.create_room()
 
         try:
             # Connect to second room (should disconnect from first)
-            await producer.connect(room_id_2)
+            await producer.connect(workspace_id_2, room_id_2)
             assert producer.room_id == room_id_2
+            assert producer.workspace_id == workspace_id_2
             assert producer.is_connected()
 
         finally:
-            await producer.delete_room(room_id_2)
+            await producer.delete_room(workspace_id_2, room_id_2)
 
     @pytest.mark.asyncio
     async def test_context_manager(self, test_room):
         """Test using producer as context manager."""
+        workspace_id, room_id = test_room
         async with RoboticsProducer("http://localhost:8000") as producer:
-            await producer.connect(test_room)
+            await producer.connect(workspace_id, room_id)
             assert producer.is_connected()
 
             await producer.send_state_sync({"test": 123.0})
@@ -157,15 +165,16 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_duplicate_producer_connection(self, producer, test_room):
         """Test what happens when multiple producers try to connect to same room."""
+        workspace_id, room_id = test_room
         producer2 = RoboticsProducer("http://localhost:8000")
 
         try:
             # First producer connects successfully
-            success1 = await producer.connect(test_room)
+            success1 = await producer.connect(workspace_id, room_id)
             assert success1 is True
 
             # Second producer should fail to connect as producer
-            success2 = await producer2.connect(test_room)
+            success2 = await producer2.connect(workspace_id, room_id)
             assert success2 is False  # Should fail since room already has producer
 
         finally:
@@ -175,9 +184,10 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_custom_participant_id(self, producer, test_room):
         """Test connecting with custom participant ID."""
+        workspace_id, room_id = test_room
         custom_id = "custom-producer-123"
 
-        await producer.connect(test_room, participant_id=custom_id)
+        await producer.connect(workspace_id, room_id, participant_id=custom_id)
 
         info = producer.get_connection_info()
         assert info["participant_id"] == custom_id
@@ -185,7 +195,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_large_joint_update(self, connected_producer):
         """Test sending large joint update."""
-        producer, _room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         # Create a large joint update
         joints = [{"name": f"joint_{i}", "value": float(i)} for i in range(100)]
@@ -196,7 +206,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_rapid_updates(self, connected_producer):
         """Test sending rapid joint updates."""
-        producer, _room_id = connected_producer
+        producer, workspace_id, room_id = connected_producer
 
         # Send multiple rapid updates
         for i in range(10):

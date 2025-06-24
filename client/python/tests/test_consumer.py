@@ -10,12 +10,14 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_connection(self, consumer, test_room):
         """Test basic consumer connection."""
+        workspace_id, room_id = test_room
         assert not consumer.is_connected()
 
-        success = await consumer.connect(test_room)
+        success = await consumer.connect(workspace_id, room_id)
         assert success is True
         assert consumer.is_connected()
-        assert consumer.room_id == test_room
+        assert consumer.room_id == room_id
+        assert consumer.workspace_id == workspace_id
         assert consumer.role == "consumer"
 
         await consumer.disconnect()
@@ -24,11 +26,12 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_connection_info(self, connected_consumer):
         """Test getting connection information."""
-        consumer, room_id = connected_consumer
+        consumer, workspace_id, room_id = connected_consumer
 
         info = consumer.get_connection_info()
         assert info["connected"] is True
         assert info["room_id"] == room_id
+        assert info["workspace_id"] == workspace_id
         assert info["role"] == "consumer"
         assert info["participant_id"] is not None
         assert info["base_url"] == "http://localhost:8000"
@@ -36,7 +39,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_get_state_sync(self, connected_consumer):
         """Test getting current state synchronously."""
-        consumer, _room_id = connected_consumer
+        consumer, workspace_id, room_id = connected_consumer
 
         state = await consumer.get_state_sync()
         assert isinstance(state, dict)
@@ -46,6 +49,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_callbacks_setup(self, consumer, test_room):
         """Test setting up consumer callbacks."""
+        workspace_id, room_id = test_room
         state_sync_called = False
         joint_update_called = False
         error_called = False
@@ -80,7 +84,7 @@ class TestRoboticsConsumer:
         consumer.on_disconnected(on_disconnected)
 
         # Connect and test connection callbacks
-        await consumer.connect(test_room)
+        await consumer.connect(workspace_id, room_id)
         await asyncio.sleep(0.1)
         assert connected_called is True
 
@@ -91,13 +95,14 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_multiple_consumers(self, test_room):
         """Test multiple consumers connecting to same room."""
+        workspace_id, room_id = test_room
         consumer1 = RoboticsConsumer("http://localhost:8000")
         consumer2 = RoboticsConsumer("http://localhost:8000")
 
         try:
             # Both consumers should be able to connect
-            success1 = await consumer1.connect(test_room)
-            success2 = await consumer2.connect(test_room)
+            success1 = await consumer1.connect(workspace_id, room_id)
+            success2 = await consumer2.connect(workspace_id, room_id)
 
             assert success1 is True
             assert success2 is True
@@ -113,7 +118,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_receive_state_sync(self, producer_consumer_pair):
         """Test consumer receiving state sync from producer."""
-        producer, consumer, _room_id = producer_consumer_pair
+        producer, consumer, workspace_id, room_id = producer_consumer_pair
 
         received_states = []
         received_updates = []
@@ -143,7 +148,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_receive_joint_updates(self, producer_consumer_pair):
         """Test consumer receiving joint updates from producer."""
-        producer, consumer, _room_id = producer_consumer_pair
+        producer, consumer, workspace_id, room_id = producer_consumer_pair
 
         received_updates = []
 
@@ -175,7 +180,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_multiple_updates(self, producer_consumer_pair):
         """Test consumer receiving multiple updates."""
-        producer, consumer, _room_id = producer_consumer_pair
+        producer, consumer, workspace_id, room_id = producer_consumer_pair
 
         received_updates = []
 
@@ -204,7 +209,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_emergency_stop(self, producer_consumer_pair):
         """Test consumer receiving emergency stop."""
-        producer, consumer, _room_id = producer_consumer_pair
+        producer, consumer, workspace_id, room_id = producer_consumer_pair
 
         received_errors = []
 
@@ -230,9 +235,10 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_custom_participant_id(self, consumer, test_room):
         """Test connecting with custom participant ID."""
+        workspace_id, room_id = test_room
         custom_id = "custom-consumer-456"
 
-        await consumer.connect(test_room, participant_id=custom_id)
+        await consumer.connect(workspace_id, room_id, participant_id=custom_id)
 
         info = consumer.get_connection_info()
         assert info["participant_id"] == custom_id
@@ -240,8 +246,9 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_context_manager(self, test_room):
         """Test using consumer as context manager."""
+        workspace_id, room_id = test_room
         async with RoboticsConsumer("http://localhost:8000") as consumer:
-            await consumer.connect(test_room)
+            await consumer.connect(workspace_id, room_id)
             assert consumer.is_connected()
 
             state = await consumer.get_state_sync()
@@ -261,22 +268,24 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_reconnection(self, consumer, test_room):
         """Test consumer reconnecting to same room."""
+        workspace_id, room_id = test_room
         # First connection
-        await consumer.connect(test_room)
+        await consumer.connect(workspace_id, room_id)
         assert consumer.is_connected()
 
         await consumer.disconnect()
         assert not consumer.is_connected()
 
         # Reconnect to same room
-        await consumer.connect(test_room)
+        await consumer.connect(workspace_id, room_id)
         assert consumer.is_connected()
-        assert consumer.room_id == test_room
+        assert consumer.room_id == room_id
+        assert consumer.workspace_id == workspace_id
 
     @pytest.mark.asyncio
     async def test_consumer_state_after_producer_updates(self, producer_consumer_pair):
         """Test that consumer can get updated state after producer sends updates."""
-        producer, consumer, _room_id = producer_consumer_pair
+        producer, consumer, workspace_id, room_id = producer_consumer_pair
 
         # Give some time for connection to stabilize
         await asyncio.sleep(0.1)

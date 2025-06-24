@@ -1,5 +1,5 @@
 /**
- * Type definitions for LeRobot Arena Robotics Client
+ * Type definitions for RobotHub TransportServer Robotics Client
  */
 
 // ============= CORE TYPES =============

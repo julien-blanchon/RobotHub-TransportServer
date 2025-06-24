@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Producer-Consumer Demo - LeRobot Arena
+Producer-Consumer Demo - RobotHub TransportServer
 
 This example demonstrates:
 - Producer and multiple consumers working together
@@ -24,8 +24,9 @@ logger = logging.getLogger(__name__)
 class DemoConsumer:
     """Demo consumer that logs all received messages."""
 
-    def __init__(self, name: str, room_id: str):
+    def __init__(self, name: str, workspace_id: str, room_id: str):
         self.name = name
+        self.workspace_id = workspace_id
         self.room_id = room_id
         self.consumer = RoboticsConsumer("http://localhost:8000")
         self.update_count = 0
@@ -63,7 +64,9 @@ class DemoConsumer:
 
     async def connect(self):
         """Connect to room."""
-        success = await self.consumer.connect(self.room_id, f"demo-{self.name}")
+        success = await self.consumer.connect(
+            self.workspace_id, self.room_id, f"demo-{self.name}"
+        )
         if success:
             logger.info(f"[{self.name}] Successfully connected to room {self.room_id}")
         else:
@@ -125,7 +128,7 @@ async def simulate_robot_movement(producer: RoboticsProducer):
 
 async def main():
     """Main demo function."""
-    logger.info("=== LeRobot Arena Producer-Consumer Demo ===")
+    logger.info("=== RobotHub TransportServer Producer-Consumer Demo ===")
 
     # Create producer
     producer = RoboticsProducer("http://localhost:8000")
@@ -146,10 +149,11 @@ async def main():
 
     try:
         # Create room and connect producer
-        room_id = await producer.create_room()
+        workspace_id, room_id = await producer.create_room()
         logger.info(f"Created room: {room_id}")
+        logger.info(f"Workspace ID: {workspace_id}")
 
-        success = await producer.connect(room_id, "robot-controller")
+        success = await producer.connect(workspace_id, room_id, "robot-controller")
         if not success:
             logger.error("Failed to connect producer!")
             return
@@ -159,7 +163,7 @@ async def main():
         consumer_names = ["visualizer", "logger", "safety-monitor"]
 
         for name in consumer_names:
-            consumer = DemoConsumer(name, room_id)
+            consumer = DemoConsumer(name, workspace_id, room_id)
             await consumer.setup()
             consumers.append(consumer)
 
@@ -212,6 +216,14 @@ async def main():
         # Disconnect producer
         if producer.is_connected():
             await producer.disconnect()
+
+        # Clean up the room
+        if "workspace_id" in locals() and "room_id" in locals():
+            try:
+                await producer.delete_room(workspace_id, room_id)
+                logger.info("Room cleaned up")
+            except Exception as e:
+                logger.warning(f"Failed to clean up room: {e}")
 
         logger.info("Demo cleanup completed")
 

@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
 
 # FastAPI application (preserves original configuration)
 app = FastAPI(
-    title="LeRobot Arena Server",
+    title="RobotHub TransportServer Server",
     description="WebRTC video streaming server for robotics applications",
     version="2.0.0",
     lifespan=lifespan,
@@ -68,15 +68,3 @@ async def health_check():
         "status": "healthy",
         "server_running": True,
     }
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    logger.info("🤖 Starting LeRobot Arena Modular Server...")
-    print("🤖 Starting LeRobot Arena Modular Server...")
-    uvicorn.run(
-        "api:app",
-        reload=False,
-        log_level="info",
-    )

@@ -16,16 +16,6 @@ robotics_core = RoboticsCore()
 # ============= CONVENIENT ROOM ENDPOINTS =============
 
 
-# Legacy endpoint for backward compatibility - creates random workspace
-@robotics_router.get("/rooms")
-async def list_rooms_legacy():
-    """List all robotics rooms (legacy - requires workspace)"""
-    raise HTTPException(
-        status_code=400,
-        detail="Workspace ID required. Use /workspaces/{workspace_id}/rooms instead",
-    )
-
-
 @robotics_router.get("/workspaces/{workspace_id}/rooms")
 async def list_rooms(workspace_id: str):
     """List all robotics rooms in a workspace"""
@@ -34,26 +24,6 @@ async def list_rooms(workspace_id: str):
         "workspace_id": workspace_id,
         "rooms": robotics_core.list_rooms(workspace_id),
         "total": len(robotics_core.list_rooms(workspace_id)),
-    }
-
-
-# Legacy endpoint for backward compatibility - creates random workspace
-@robotics_router.post("/rooms")
-async def create_room_legacy(request: CreateRoomRequest | None = None):
-    """Create a new robotics room (legacy - creates random workspace)"""
-    workspace_id = None
-    room_id = None
-    if request:
-        workspace_id = request.workspace_id
-        room_id = request.room_id
-
-    workspace_id, room_id = robotics_core.create_room(workspace_id, room_id)
-
-    return {
-        "success": True,
-        "workspace_id": workspace_id,
-        "room_id": room_id,
-        "message": f"Room {room_id} created successfully in workspace {workspace_id}",
     }
 
 

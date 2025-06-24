@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Test script for LeRobot Arena Transport Server Docker setup
+# Test script for RobotHub TransportServer Transport Server Docker setup
 set -e
 
-echo "🤖 Testing LeRobot Arena Transport Server Docker Setup"
+echo "🤖 Testing RobotHub TransportServer Transport Server Docker Setup"
 echo "=================================================="
 
 # Colors for output
@@ -13,7 +13,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-CONTAINER_NAME="lerobot-arena-transport-test"
+CONTAINER_NAME="robothub-transport-server-test"
 PORT=7860
 MAX_WAIT=60
 
@@ -29,7 +29,7 @@ trap cleanup EXIT
 
 # Step 1: Build the Docker image
 echo -e "\n${YELLOW}Step 1: Building Docker image...${NC}"
-docker build -t lerobot-arena-transport . || {
+docker build -t robothub-transport-server . || {
     echo -e "${RED}❌ Failed to build Docker image${NC}"
     exit 1
 }
@@ -41,7 +41,7 @@ docker run -d \
     --name $CONTAINER_NAME \
     -p $PORT:7860 \
     -e SERVE_FRONTEND=true \
-    lerobot-arena-transport || {
+    	robothub-transport-server || {
     echo -e "${RED}❌ Failed to start container${NC}"
     exit 1
 }
@@ -156,6 +156,6 @@ echo "🌐 Access the application at: http://localhost:$PORT"
 echo "📚 API docs available at: http://localhost:$PORT/api/docs"
 echo ""
 echo "To manually test:"
-echo "  docker run -p 7860:7860 -e SERVE_FRONTEND=true lerobot-arena-transport"
+echo "  docker run -p 7860:7860 -e SERVE_FRONTEND=true robothub-transport-server"
 echo ""
 echo -e "${YELLOW}Container will be cleaned up automatically.${NC}" 

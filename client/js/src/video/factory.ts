@@ -1,5 +1,5 @@
 /**
- * Factory functions for creating LeRobot Arena video clients
+ * Factory functions for creating RobotHub TransportServer video clients
  */
 
 import { VideoProducer } from './producer.js';

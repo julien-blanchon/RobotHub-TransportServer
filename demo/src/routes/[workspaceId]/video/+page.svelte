@@ -99,7 +99,7 @@
 </script>
 
 <svelte:head>
-	<title>Video Streaming - Workspace {workspaceId} - LeRobot Arena</title>
+	<title>Video Streaming - Workspace {workspaceId} - RobotHub TransportServer</title>
 </svelte:head>
 
 <div class="mx-auto max-w-7xl">

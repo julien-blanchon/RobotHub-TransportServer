@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Basic Consumer Example - LeRobot Arena
+Basic Consumer Example - RobotHub TransportServer
 
 This example demonstrates:
 - Connecting to an existing room as a consumer
@@ -21,12 +21,16 @@ logger = logging.getLogger(__name__)
 
 async def main():
     """Basic consumer example."""
-    # You need to provide an existing room ID
-    # You can get this from running basic_producer.py first
-    room_id = input("Enter room ID to connect to: ").strip()
+    # You need to provide an existing workspace and room ID
+    # You can get these from running basic_producer.py first
+    print(
+        "Enter connection details (you can get these from running basic_producer.py):"
+    )
+    workspace_id = input("Enter workspace ID: ").strip()
+    room_id = input("Enter room ID: ").strip()
 
-    if not room_id:
-        logger.error("Room ID is required!")
+    if not workspace_id or not room_id:
+        logger.error("Both workspace ID and room ID are required!")
         return
 
     # Create consumer client
@@ -63,10 +67,12 @@ async def main():
 
     try:
         # Connect to the room
-        success = await consumer.connect(room_id)
+        success = await consumer.connect(workspace_id, room_id)
         if not success:
             logger.error("Failed to connect to room!")
             return
+
+        logger.info(f"Connected to room {room_id} in workspace {workspace_id}")
 
         # Get initial state
         initial_state = await consumer.get_state_sync()
@@ -86,6 +92,7 @@ async def main():
         # Always disconnect
         if consumer.is_connected():
             await consumer.disconnect()
+            logger.info("Consumer disconnected")
 
 
 if __name__ == "__main__":

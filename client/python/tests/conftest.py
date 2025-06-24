@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 import pytest_asyncio
-from lerobot_arena_client import RoboticsConsumer, RoboticsProducer
+from transport_server_client import RoboticsConsumer, RoboticsProducer
 
 # Default server URL for tests
 TEST_SERVER_URL = "http://localhost:8000"

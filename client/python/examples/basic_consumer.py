@@ -12,7 +12,7 @@ This example demonstrates:
 import asyncio
 import logging
 
-from lerobot_arena_client import RoboticsConsumer
+from transport_server_client import RoboticsConsumer
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -81,7 +81,7 @@ async def main():
         logger.info(f"Received {len(received_states)} state syncs")
 
     except Exception as e:
-        logger.error(f"Error: {e}")
+        logger.exception(f"Error: {e}")
     finally:
         # Always disconnect
         if consumer.is_connected():

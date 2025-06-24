@@ -13,7 +13,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from lerobot_arena_client.video import VideoConsumer
+from transport_server_client.video import VideoConsumer
 
 # Setup logging
 logging.basicConfig(
@@ -81,7 +81,7 @@ class VideoFrameHandler:
                 self.last_log_time = current_time
 
         except Exception as e:
-            logger.error(f"❌ Error handling frame {self.frame_count}: {e}")
+            logger.exception(f"❌ Error handling frame {self.frame_count}: {e}")
 
 
 async def main():
@@ -171,7 +171,7 @@ async def main():
             logger.warning("⚠️ No frames received - check if producer is active")
 
     except Exception as e:
-        logger.error(f"❌ Consumer example failed: {e}")
+        logger.exception(f"❌ Consumer example failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -183,7 +183,7 @@ async def main():
             await consumer.stop_receiving()
             logger.info("👋 Consumer stopped successfully")
         except Exception as e:
-            logger.error(f"Error during cleanup: {e}")
+            logger.exception(f"Error during cleanup: {e}")
 
 
 if __name__ == "__main__":
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logger.info("👋 Goodbye!")
     except Exception as e:
-        logger.error(f"💥 Fatal error: {e}")
+        logger.exception(f"💥 Fatal error: {e}")
         import traceback
 
         traceback.print_exc()

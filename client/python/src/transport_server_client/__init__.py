@@ -1,6 +1,6 @@
 # Import video module
-from lerobot_arena_client import video
-from lerobot_arena_client.client import (
+from transport_server_client import video
+from transport_server_client.client import (
     RoboticsClientCore,
     RoboticsConsumer,
     RoboticsProducer,

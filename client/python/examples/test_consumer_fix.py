@@ -13,7 +13,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from lerobot_arena_client.video import VideoConsumer
+from transport_server_client.video import VideoConsumer
 
 # Setup logging
 logging.basicConfig(
@@ -83,7 +83,7 @@ class FrameProcessor:
                 logger.info(f"   Data received: {mb_received:.2f} MB")
 
         except Exception as e:
-            logger.error(f"❌ Error processing frame {self.frame_count}: {e}")
+            logger.exception(f"❌ Error processing frame {self.frame_count}: {e}")
 
 
 async def test_consumer_fix():
@@ -177,7 +177,7 @@ async def test_consumer_fix():
         return False
 
     except Exception as e:
-        logger.error(f"❌ Test failed with error: {e}")
+        logger.exception(f"❌ Test failed with error: {e}")
         import traceback
 
         traceback.print_exc()
@@ -203,7 +203,7 @@ async def main():
         logger.info("🛑 Test interrupted by user")
         return 1
     except Exception as e:
-        logger.error(f"💥 Unexpected error: {e}")
+        logger.exception(f"💥 Unexpected error: {e}")
         return 1
 
 

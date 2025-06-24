@@ -13,7 +13,7 @@ import time
 import numpy as np
 
 # Import the video client
-from lerobot_arena_client.video import (
+from transport_server_client.video import (
     VideoProducer,
     create_producer_client,
 )
@@ -134,7 +134,7 @@ async def main():
         await producer.stop_streaming()
 
     except Exception as e:
-        logger.error(f"❌ Unexpected error: {e}")
+        logger.exception(f"❌ Unexpected error: {e}")
         import traceback
 
         traceback.print_exc()
@@ -184,7 +184,7 @@ async def camera_example():
             logger.warning("⚠️  No cameras found")
 
     except Exception as e:
-        logger.error(f"❌ Camera error: {e}")
+        logger.exception(f"❌ Camera error: {e}")
         logger.info("💡 Make sure your camera is available and not used by other apps")
     finally:
         if "producer" in locals():
@@ -211,7 +211,7 @@ async def screen_share_example():
         await asyncio.sleep(20)
 
     except Exception as e:
-        logger.error(f"❌ Screen share error: {e}")
+        logger.exception(f"❌ Screen share error: {e}")
     finally:
         if "producer" in locals():
             await producer.disconnect()

@@ -12,7 +12,7 @@ This example demonstrates:
 import asyncio
 import logging
 
-from lerobot_arena_client import (
+from transport_server_client import (
     RoboticsConsumer,
     RoboticsProducer,
     create_consumer_client,
@@ -67,7 +67,7 @@ async def factory_function_example():
 
         # Set up callback
         received_updates = []
-        consumer.on_joint_update(lambda joints: received_updates.append(joints))
+        consumer.on_joint_update(received_updates.append)
 
         # Send some updates
         await producer.send_joint_update([
@@ -99,14 +99,15 @@ async def exception_handling_example():
             for i in range(5):
                 if i == 3:
                     # Simulate an error
-                    raise ValueError("Simulated error during operation")
+                    msg = "Simulated error during operation"
+                    raise ValueError(msg)
 
                 await producer.send_state_sync({f"joint_{i}": float(i * 10)})
                 logger.info(f"Sent update {i}")
                 await asyncio.sleep(0.1)
 
     except ValueError as e:
-        logger.error(f"Caught expected error: {e}")
+        logger.exception(f"Caught expected error: {e}")
         logger.info("Context manager still ensures cleanup")
 
     logger.info("Exception handling example completed")
@@ -170,7 +171,7 @@ async def main():
         logger.info("\n✅ All context manager examples completed successfully!")
 
     except Exception as e:
-        logger.error(f"❌ Example failed: {e}")
+        logger.exception(f"❌ Example failed: {e}")
 
 
 if __name__ == "__main__":

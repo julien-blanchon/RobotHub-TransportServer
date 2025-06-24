@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { robotics } from '@robohub/transport-server-client';
-	import type { robotics as roboticsTypes } from '@robohub/transport-server-client';
+	import { robotics } from '@robothub/transport-server-client';
+	import type { robotics as roboticsTypes } from '@robothub/transport-server-client';
 
 	// Get data from load function
 	let { data } = $props();

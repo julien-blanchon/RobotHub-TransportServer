@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from lerobot_arena_client import (
+from transport_server_client import (
     RoboticsConsumer,
     RoboticsProducer,
     create_client,

@@ -20,7 +20,7 @@ pip install -e ".[dev]"
 
 ```python
 import asyncio
-from lerobot_arena_client import RoboticsProducer
+from transport_server_client import RoboticsProducer
 
 async def main():
     # Create producer client
@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
 ```python
 import asyncio
-from lerobot_arena_client import RoboticsConsumer
+from transport_server_client import RoboticsConsumer
 
 async def main():
     consumer = RoboticsConsumer('http://localhost:8000')
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
 ```python
 import asyncio
-from lerobot_arena_client import create_client
+from transport_server_client import create_client
 
 async def main():
     # Create clients using factory function
@@ -113,7 +113,7 @@ async def main():
     consumer = create_client("consumer", "http://localhost:8000")
     
     # Or use convenience functions
-    from lerobot_arena_client import create_producer_client, create_consumer_client
+    from transport_server_client import create_producer_client, create_consumer_client
     
     # Quick producer setup (auto-creates room and connects)
     producer = await create_producer_client('http://localhost:8000')
@@ -136,7 +136,7 @@ if __name__ == "__main__":
 
 ```python
 import asyncio
-from lerobot_arena_client import RoboticsProducer, RoboticsConsumer
+from transport_server_client import RoboticsProducer, RoboticsConsumer
 
 async def run_producer(room_id: str):
     async with RoboticsProducer() as producer:

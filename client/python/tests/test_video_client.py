@@ -10,7 +10,7 @@ import logging
 
 import numpy as np
 import pytest
-from lerobot_arena_client.video import (
+from transport_server_client.video import (
     CustomVideoTrack,
     ParticipantRole,
     Resolution,
@@ -162,15 +162,13 @@ class TestVideoClientIntegration:
         # (We can't actually connect without a server)
 
         try:
-            producer = await create_producer_client("http://localhost:8000")
+            await create_producer_client("http://localhost:8000")
         except Exception:
             # Expected to fail without server
             pass
 
         try:
-            consumer = await create_consumer_client(
-                "test-room", "http://localhost:8000"
-            )
+            await create_consumer_client("test-room", "http://localhost:8000")
         except Exception:
             # Expected to fail without server
             pass

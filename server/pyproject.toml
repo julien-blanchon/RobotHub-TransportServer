@@ -1,7 +1,7 @@
 [project]
-name = "robohub-transport-server"
+name = "robothub-transport-server"
 version = "1.0.0"
-description = "RoboHub transport server"
+description = "robothub transport server"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

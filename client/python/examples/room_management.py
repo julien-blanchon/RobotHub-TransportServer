@@ -13,7 +13,7 @@ This example demonstrates:
 import asyncio
 import logging
 
-from lerobot_arena_client import RoboticsClientCore
+from transport_server_client import RoboticsClientCore
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -86,7 +86,7 @@ async def main():
         logger.info("\nRoom management example completed!")
 
     except Exception as e:
-        logger.error(f"Error: {e}")
+        logger.exception(f"Error: {e}")
 
 
 if __name__ == "__main__":

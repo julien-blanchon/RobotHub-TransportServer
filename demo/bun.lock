@@ -4,7 +4,7 @@
     "": {
       "name": "demo",
       "dependencies": {
-        "@robohub/transport-server-client": "https://gitpkg.now.sh/julien-blanchon/RoboHub/services/transport-server/client/js?main",
+        "@robothub/transport-server-client": "https://gitpkg.now.sh/julien-blanchon/robothub/services/transport-server/client/js?main",
       },
       "devDependencies": {
         "@eslint/compat": "^1.2.5",
@@ -130,7 +130,7 @@
 
     "@polka/url": ["@polka/url@1.0.0-next.29", "", {}, "sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww=="],
 
-    "@robohub/transport-server-client": ["@robohub/transport-server-client@https://gitpkg.now.sh/julien-blanchon/RoboHub/services/transport-server/client/js?main", { "dependencies": { "eventemitter3": "^5.0.1" }, "peerDependencies": { "typescript": ">=5.0.0" } }],
+    "@robothub/transport-server-client": ["@robothub/transport-server-client@https://gitpkg.now.sh/julien-blanchon/robothub/services/transport-server/client/js?main", { "dependencies": { "eventemitter3": "^5.0.1" }, "peerDependencies": { "typescript": ">=5.0.0" } }],
 
     "@rollup/rollup-android-arm-eabi": ["@rollup/rollup-android-arm-eabi@4.41.1", "", { "os": "android", "cpu": "arm" }, "sha512-NELNvyEWZ6R9QMkiytB4/L4zSEaBC03KIXEghptLGLZWJ6VPrL63ooZQCOnlx36aQPGhzuOMwDerC1Eb2VmrLw=="],
 

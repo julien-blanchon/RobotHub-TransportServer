@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from lerobot_arena_client import (
+from transport_server_client import (
     RoboticsProducer,
     create_consumer_client,
     create_producer_client,
@@ -98,12 +98,8 @@ class TestIntegration:
                 consumer1_updates = []
                 consumer2_updates = []
 
-                consumer1.on_joint_update(
-                    lambda joints: consumer1_updates.append(joints)
-                )
-                consumer2.on_joint_update(
-                    lambda joints: consumer2_updates.append(joints)
-                )
+                consumer1.on_joint_update(consumer1_updates.append)
+                consumer2.on_joint_update(consumer2_updates.append)
 
                 # Wait for connections
                 await asyncio.sleep(0.2)
@@ -150,8 +146,8 @@ class TestIntegration:
                 consumer1_errors = []
                 consumer2_errors = []
 
-                consumer1.on_error(lambda error: consumer1_errors.append(error))
-                consumer2.on_error(lambda error: consumer2_errors.append(error))
+                consumer1.on_error(consumer1_errors.append)
+                consumer2.on_error(consumer2_errors.append)
 
                 # Wait for connections
                 await asyncio.sleep(0.2)
@@ -193,7 +189,7 @@ class TestIntegration:
 
             try:
                 received_updates = []
-                consumer.on_joint_update(lambda joints: received_updates.append(joints))
+                consumer.on_joint_update(received_updates.append)
 
                 # Create producer and connect
                 producer = RoboticsProducer("http://localhost:8000")
@@ -301,7 +297,7 @@ class TestIntegration:
 
             try:
                 received_updates = []
-                consumer.on_joint_update(lambda joints: received_updates.append(joints))
+                consumer.on_joint_update(received_updates.append)
 
                 # Wait for connection
                 await asyncio.sleep(0.1)

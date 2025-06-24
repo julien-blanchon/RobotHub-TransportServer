@@ -124,7 +124,7 @@ export class VideoProducer extends VideoClientCore {
   }
 
   private async restartConnectionsWithNewStream(stream: MediaStream): Promise<void> {
-    console.info('🔄 Restarting connections with new stream...');
+    console.info('🔄 Restarting connections with new stream...', { streamId: stream.id });
     
     // Close all existing connections
     for (const [consumerId, peerConnection] of this.consumerConnections) {

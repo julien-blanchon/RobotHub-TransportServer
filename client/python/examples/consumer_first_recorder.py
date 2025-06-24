@@ -18,7 +18,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from lerobot_arena_client.video import VideoConsumer
+from transport_server_client.video import VideoConsumer
 
 # Setup logging
 logging.basicConfig(
@@ -123,7 +123,7 @@ class VideoRecorder:
                 )
 
         except Exception as e:
-            logger.error(f"❌ Error adding frame to recording: {e}")
+            logger.exception(f"❌ Error adding frame to recording: {e}")
 
         return False
 
@@ -290,7 +290,7 @@ async def main():
             logger.warning("⚠️ No recording was made - producer may not have joined")
 
     except Exception as e:
-        logger.error(f"❌ Consumer-first recorder failed: {e}")
+        logger.exception(f"❌ Consumer-first recorder failed: {e}")
         import traceback
 
         traceback.print_exc()
@@ -303,7 +303,7 @@ async def main():
             await consumer.disconnect()
             logger.info("👋 Consumer disconnected successfully")
         except Exception as e:
-            logger.error(f"Error during cleanup: {e}")
+            logger.exception(f"Error during cleanup: {e}")
 
 
 if __name__ == "__main__":
@@ -313,7 +313,7 @@ if __name__ == "__main__":
         logger.info("🛑 Stopped by user")
         logger.info("👋 Goodbye!")
     except Exception as e:
-        logger.error(f"💥 Fatal error: {e}")
+        logger.exception(f"💥 Fatal error: {e}")
         import traceback
 
         traceback.print_exc()

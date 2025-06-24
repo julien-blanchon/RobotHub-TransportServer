@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from lerobot_arena_client import RoboticsProducer
+from transport_server_client import RoboticsProducer
 
 
 class TestRoboticsProducer:
@@ -36,7 +36,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_joint_update(self, connected_producer):
         """Test sending joint updates."""
-        producer, room_id = connected_producer
+        producer, _room_id = connected_producer
 
         joints = [
             {"name": "shoulder", "value": 45.0},
@@ -50,7 +50,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_state_sync(self, connected_producer):
         """Test sending state synchronization."""
-        producer, room_id = connected_producer
+        producer, _room_id = connected_producer
 
         state = {"shoulder": 45.0, "elbow": -20.0, "wrist": 10.0}
 
@@ -60,7 +60,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_emergency_stop(self, connected_producer):
         """Test sending emergency stop."""
-        producer, room_id = connected_producer
+        producer, _room_id = connected_producer
 
         # Should not raise an exception
         await producer.send_emergency_stop("Test emergency stop")
@@ -69,7 +69,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_send_heartbeat(self, connected_producer):
         """Test sending heartbeat."""
-        producer, room_id = connected_producer
+        producer, _room_id = connected_producer
 
         # Should not raise an exception
         await producer.send_heartbeat()
@@ -185,12 +185,10 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_large_joint_update(self, connected_producer):
         """Test sending large joint update."""
-        producer, room_id = connected_producer
+        producer, _room_id = connected_producer
 
         # Create a large joint update
-        joints = []
-        for i in range(100):
-            joints.append({"name": f"joint_{i}", "value": float(i)})
+        joints = [{"name": f"joint_{i}", "value": float(i)} for i in range(100)]
 
         # Should handle large updates without issue
         await producer.send_joint_update(joints)
@@ -198,7 +196,7 @@ class TestRoboticsProducer:
     @pytest.mark.asyncio
     async def test_rapid_updates(self, connected_producer):
         """Test sending rapid joint updates."""
-        producer, room_id = connected_producer
+        producer, _room_id = connected_producer
 
         # Send multiple rapid updates
         for i in range(10):

@@ -30,7 +30,7 @@ bun run build
 ### Producer (Robot Controller)
 
 ```typescript
-import { RoboticsProducer, createProducerClient } from '@robohub/transport-server-client';
+import { RoboticsProducer, createProducerClient } from '@robothub/transport-server-client';
 
 // Method 1: Manual setup
 const producer = new RoboticsProducer('http://localhost:8000');
@@ -61,7 +61,7 @@ await producer.sendEmergencyStop('Safety stop triggered');
 ### Consumer (Robot Monitor)
 
 ```typescript
-import { RoboticsConsumer, createConsumerClient } from '@robohub/transport-server-client';
+import { RoboticsConsumer, createConsumerClient } from '@robothub/transport-server-client';
 
 // Connect to existing room
 const consumer = await createConsumerClient(roomId, 'http://localhost:8000');
@@ -152,7 +152,7 @@ const consumer = await RoboticsConsumer.createAndConnect(roomId, baseUrl, partic
 ### Factory Functions
 
 ```typescript
-import { createClient, createProducerClient, createConsumerClient } from '@robohub/transport-server-client';
+import { createClient, createProducerClient, createConsumerClient } from '@robothub/transport-server-client';
 
 // Generic factory
 const client = createClient('producer', 'http://localhost:8000');

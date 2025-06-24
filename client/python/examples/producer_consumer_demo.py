@@ -14,7 +14,7 @@ import asyncio
 import logging
 import random
 
-from lerobot_arena_client import RoboticsConsumer, RoboticsProducer
+from transport_server_client import RoboticsConsumer, RoboticsProducer
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -200,7 +200,7 @@ async def main():
         logger.info("Demo completed successfully!")
 
     except Exception as e:
-        logger.error(f"Demo error: {e}")
+        logger.exception(f"Demo error: {e}")
     finally:
         # Cleanup
         logger.info("Cleaning up...")

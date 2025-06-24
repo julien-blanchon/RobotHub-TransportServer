@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from lerobot_arena_client import RoboticsConsumer
+from transport_server_client import RoboticsConsumer
 
 
 class TestRoboticsConsumer:
@@ -36,7 +36,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_get_state_sync(self, connected_consumer):
         """Test getting current state synchronously."""
-        consumer, room_id = connected_consumer
+        consumer, _room_id = connected_consumer
 
         state = await consumer.get_state_sync()
         assert isinstance(state, dict)
@@ -113,7 +113,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_receive_state_sync(self, producer_consumer_pair):
         """Test consumer receiving state sync from producer."""
-        producer, consumer, room_id = producer_consumer_pair
+        producer, consumer, _room_id = producer_consumer_pair
 
         received_states = []
         received_updates = []
@@ -143,7 +143,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_receive_joint_updates(self, producer_consumer_pair):
         """Test consumer receiving joint updates from producer."""
-        producer, consumer, room_id = producer_consumer_pair
+        producer, consumer, _room_id = producer_consumer_pair
 
         received_updates = []
 
@@ -175,7 +175,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_multiple_updates(self, producer_consumer_pair):
         """Test consumer receiving multiple updates."""
-        producer, consumer, room_id = producer_consumer_pair
+        producer, consumer, _room_id = producer_consumer_pair
 
         received_updates = []
 
@@ -204,7 +204,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_emergency_stop(self, producer_consumer_pair):
         """Test consumer receiving emergency stop."""
-        producer, consumer, room_id = producer_consumer_pair
+        producer, consumer, _room_id = producer_consumer_pair
 
         received_errors = []
 
@@ -276,7 +276,7 @@ class TestRoboticsConsumer:
     @pytest.mark.asyncio
     async def test_consumer_state_after_producer_updates(self, producer_consumer_pair):
         """Test that consumer can get updated state after producer sends updates."""
-        producer, consumer, room_id = producer_consumer_pair
+        producer, consumer, _room_id = producer_consumer_pair
 
         # Give some time for connection to stabilize
         await asyncio.sleep(0.1)

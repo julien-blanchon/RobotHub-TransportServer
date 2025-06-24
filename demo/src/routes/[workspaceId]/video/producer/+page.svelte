@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { video } from '@robohub/transport-server-client';
+	import { video } from '@robothub/transport-server-client';
 
 	// Get data from load function
 	let { data } = $props();

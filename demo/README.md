@@ -153,7 +153,7 @@ bun run format
 The demo uses the local `lerobot-arena-client` package:
 
 ```typescript
-import { robotics } from '@robohub/transport-server-client';
+import { robotics } from '@robothub/transport-server-client';
 
 // Create clients
 const producer = new robotics.RoboticsProducer('http://localhost:8000');

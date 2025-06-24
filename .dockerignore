@@ -1,52 +1,103 @@
-# Git
-.git
-.gitignore
+/* # Node.js dependencies and cache */
+**/node_modules/
+**/.npm
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/.pnpm-debug.log*
 
-# Node modules and build artifacts
-node_modules
-.svelte-kit
-demo/build
-demo/node_modules
-client/js/node_modules
-client/js/dist
+# Bun runtime files
+**/.bun
 
-# Python cache and virtual environments
-__pycache__
-*.pyc
-*.pyo
-*.pyd
-.Python
-.venv
-.pytest_cache
-*.egg-info
+# Build outputs and generated files
+**/dist/
+**/build/
+**/.next/
+**/.svelte-kit/
 
-# Development files
-*.log
-logs/
-.DS_Store
-Thumbs.db
+# Environment and development files
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
 
-# IDE files
-.vscode
-.idea
-*.swp
-*.swo
+# Python cache and bytecode
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/*.so
+**/.Python
+**/develop-eggs/
+**/downloads/
+**/eggs/
+**/.eggs/
+**/lib/
+**/lib64/
+**/parts/
+**/sdist/
+**/var/
+**/wheels/
+**/*.egg-info/
+**/.installed.cfg
+**/*.egg
+**/MANIFEST
 
-# Temporary files
-*.tmp
-*.temp
+# Virtual environments
+**/.venv/
+**/venv/
+**/ENV/
+**/env/
 
-# Documentation
-*.md
-!README.md
+# IDEs and editors
+**/.vscode/
+**/.idea/
+**/*.swp
+**/*.swo
+**/*~
+
+# Operating system files
+**/.DS_Store
+**/Thumbs.db
+
+# Version control
+**/.git/
+**/.gitignore
+
+# Docker related files
+**/Dockerfile*
+**/docker-compose*
+**/.dockerignore
+
+# Logs and temporary files
+**/logs/
+**/*.log
+**/server.log
+**/.cache/
+**/tmp/
+**/.tmp/
+**/.pytest_cache/
+**/.mypy_cache/
 
 # Test files
-tests/
-test_*
+**/test*/
+**/tests/
+**/*test.py
+**/*_test.py
 
-# Development configs
-.eslintrc*
-.prettierrc*
-*.config.js
-!svelte.config.js
-!vite.config.ts 
+# Lock files for other package managers
+**/yarn.lock
+**/package-lock.json
+**/poetry.lock
+**/Pipfile.lock
+
+# Documentation files
+**/README.md
+**/CHANGELOG.md
+**/docs/
+
+# CI/CD configuration files
+**/.github/
+**/.gitlab-ci.yml
+**/azure-pipelines.yml
+**/.circleci/ 

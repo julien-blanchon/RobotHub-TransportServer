@@ -12,7 +12,7 @@ This example demonstrates:
 import asyncio
 import logging
 
-from lerobot_arena_client import RoboticsProducer
+from transport_server_client import RoboticsProducer
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -65,7 +65,7 @@ async def main():
         logger.info("Example completed successfully!")
 
     except Exception as e:
-        logger.error(f"Error: {e}")
+        logger.exception(f"Error: {e}")
     finally:
         # Always disconnect
         if producer.is_connected():

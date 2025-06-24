@@ -4,7 +4,7 @@
  * Simple test script to verify the demo application
  */
 
-import { robotics } from '@robohub/transport-server-client';
+import { robotics } from '@robothub/transport-server-client';
 
 console.log('🤖 Testing LeRobot Arena Demo');
 console.log('✅ Successfully imported robotics client');

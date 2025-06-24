@@ -1,6 +1,6 @@
 import pytest
 import pytest_asyncio
-from lerobot_arena_client import RoboticsProducer
+from transport_server_client import RoboticsProducer
 
 
 @pytest_asyncio.fixture

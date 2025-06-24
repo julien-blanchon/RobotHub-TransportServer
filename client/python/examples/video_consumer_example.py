@@ -80,8 +80,8 @@ class VideoFrameHandler:
 
                 self.last_log_time = current_time
 
-        except Exception as e:
-            logger.exception(f"❌ Error handling frame {self.frame_count}: {e}")
+        except Exception:
+            logger.exception(f"❌ Error handling frame {self.frame_count}")
 
 
 async def main():

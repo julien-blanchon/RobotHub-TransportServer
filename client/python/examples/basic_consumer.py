@@ -86,8 +86,8 @@ async def main():
         logger.info(f"Received {len(received_updates)} joint updates")
         logger.info(f"Received {len(received_states)} state syncs")
 
-    except Exception as e:
-        logger.exception(f"Error: {e}")
+    except Exception:
+        logger.exception("Exception: ")
     finally:
         # Always disconnect
         if consumer.is_connected():

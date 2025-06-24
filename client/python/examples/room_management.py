@@ -27,7 +27,7 @@ async def main():
 
     try:
         # Generate a workspace ID for this demo
-        workspace_id = client._generate_workspace_id()
+        workspace_id = client.generate_workspace_id()
         logger.info(f"Using workspace: {workspace_id}")
 
         # List existing rooms in this workspace
@@ -93,8 +93,8 @@ async def main():
 
         logger.info("\nRoom management example completed!")
 
-    except Exception as e:
-        logger.exception(f"Error: {e}")
+    except Exception:
+        logger.exception("Error")
 
 
 if __name__ == "__main__":

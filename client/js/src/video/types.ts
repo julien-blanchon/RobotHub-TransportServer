@@ -1,6 +1,5 @@
 /**
  * Type definitions for RobotHub TransportServer Video Client
- * ✅ Fully synchronized with server-side models.py
  */
 
 // ============= CORE TYPES =============

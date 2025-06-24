@@ -76,8 +76,8 @@ async def main():
 
         logger.info("Example completed successfully!")
 
-    except Exception as e:
-        logger.exception(f"Error: {e}")
+    except Exception:
+        logger.exception("Error")
     finally:
         # Always disconnect and cleanup
         if producer.is_connected():
@@ -89,8 +89,8 @@ async def main():
             try:
                 await producer.delete_room(workspace_id, room_id)
                 logger.info("Room cleaned up")
-            except Exception as e:
-                logger.warning(f"Failed to clean up room: {e}")
+            except Exception:
+                logger.exception("Failed to clean up room")
 
 
 if __name__ == "__main__":

@@ -122,8 +122,8 @@ class VideoRecorder:
                     f"🎬 Recording: {elapsed:.1f}s / {self.duration_seconds}s ({remaining:.1f}s remaining)"
                 )
 
-        except Exception as e:
-            logger.exception(f"❌ Error adding frame to recording: {e}")
+        except Exception:
+            logger.exception("❌ Error adding frame to recording")
 
         return False
 
@@ -291,11 +291,8 @@ async def main():
         else:
             logger.warning("⚠️ No recording was made - producer may not have joined")
 
-    except Exception as e:
-        logger.exception(f"❌ Consumer-first recorder failed: {e}")
-        import traceback
-
-        traceback.print_exc()
+    except Exception:
+        logger.exception("❌ Consumer-first recorder failed")
 
     finally:
         # Cleanup
@@ -309,12 +306,12 @@ async def main():
                 try:
                     await consumer.delete_room(workspace_id, room_id)
                     logger.info("🗑️ Room cleaned up")
-                except Exception as e:
-                    logger.warning(f"Failed to clean up room: {e}")
+                except Exception:
+                    logger.exception("Failed to clean up room")
 
             logger.info("👋 Consumer disconnected successfully")
-        except Exception as e:
-            logger.exception(f"Error during cleanup: {e}")
+        except Exception:
+            logger.exception("Error during cleanup")
 
 
 if __name__ == "__main__":
@@ -323,8 +320,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logger.info("🛑 Stopped by user")
         logger.info("👋 Goodbye!")
-    except Exception as e:
-        logger.exception(f"💥 Fatal error: {e}")
-        import traceback
-
-        traceback.print_exc()
+    except Exception:
+        logger.exception("💥 Fatal error")

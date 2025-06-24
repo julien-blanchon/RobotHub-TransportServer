@@ -45,8 +45,8 @@ async def basic_context_manager_example():
         try:
             # This might fail if room doesn't exist
             await producer.send_joint_update([{"name": "invalid", "value": 999.0}])
-        except Exception as e:
-            logger.warning(f"Handled exception: {e}")
+        except Exception:
+            logger.exception("Handled exception")
 
         # Clean up room before context exit
         await producer.delete_room(workspace_id, room_id)
@@ -118,8 +118,8 @@ async def exception_handling_example():
                 logger.info(f"Sent update {i}")
                 await asyncio.sleep(0.1)
 
-    except ValueError as e:
-        logger.exception(f"Caught expected error: {e}")
+    except ValueError:
+        logger.exception("Caught expected error")
         logger.info("Context manager still ensures cleanup")
 
     # Clean up room after exception
@@ -128,8 +128,8 @@ async def exception_handling_example():
             temp_producer = RoboticsProducer("http://localhost:8000")
             await temp_producer.delete_room(workspace_id, room_id)
             logger.info("Room cleaned up after exception")
-        except Exception as e:
-            logger.warning(f"Failed to clean up room: {e}")
+        except Exception:
+            logger.exception("Failed to clean up room")
 
     logger.info("Exception handling example completed")
 
@@ -185,8 +185,8 @@ async def multiple_clients_example():
             temp_producer = RoboticsProducer("http://localhost:8000")
             await temp_producer.delete_room(workspace_id, room_id)
             logger.info("Room cleaned up")
-        except Exception as e:
-            logger.warning(f"Failed to clean up room: {e}")
+        except Exception:
+            logger.exception("Failed to clean up room")
 
     logger.info("Multiple clients example completed")
 
@@ -203,8 +203,8 @@ async def main():
 
         logger.info("\n✅ All context manager examples completed successfully!")
 
-    except Exception as e:
-        logger.exception(f"❌ Example failed: {e}")
+    except Exception:
+        logger.exception("❌ Example failed")
 
 
 if __name__ == "__main__":

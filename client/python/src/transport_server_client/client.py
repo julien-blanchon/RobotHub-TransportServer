@@ -47,7 +47,7 @@ class RoboticsClientCore:
     ) -> tuple[str, str]:
         """Create a new room and return (workspace_id, room_id)"""
         # Generate workspace ID if not provided
-        final_workspace_id = workspace_id or self._generate_workspace_id()
+        final_workspace_id = workspace_id or self.generate_workspace_id()
 
         payload = {}
         if room_id:
@@ -304,7 +304,7 @@ class RoboticsClientCore:
 
     # ============= WORKSPACE HELPERS =============
 
-    def _generate_workspace_id(self) -> str:
+    def generate_workspace_id(self) -> str:
         """Generate a UUID-like workspace ID"""
         import uuid
 

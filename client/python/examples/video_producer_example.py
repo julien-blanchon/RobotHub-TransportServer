@@ -242,8 +242,8 @@ async def screen_share_example():
         # Share for demo duration
         await asyncio.sleep(20)
 
-    except Exception as e:
-        logger.exception(f"❌ Screen share error: {e}")
+    except Exception:
+        logger.exception("❌ Screen share error")
     finally:
         if "producer" in locals():
             await producer.disconnect()
@@ -251,8 +251,8 @@ async def screen_share_example():
                 try:
                     await producer.delete_room(workspace_id, room_id)
                     logger.info("🗑️ Room cleaned up")
-                except Exception as e:
-                    logger.warning(f"Failed to clean up room: {e}")
+                except Exception:
+                    logger.exception("Failed to clean up room")
 
 
 if __name__ == "__main__":

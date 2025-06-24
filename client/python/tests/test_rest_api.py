@@ -17,7 +17,7 @@ class TestRestAPI:
     async def test_list_rooms_empty(self, producer):
         """Test listing rooms when no rooms exist."""
         # Use a temporary workspace ID
-        workspace_id = producer._generate_workspace_id()
+        workspace_id = producer.generate_workspace_id()
         rooms = await producer.list_rooms(workspace_id)
         assert isinstance(rooms, list)
 
@@ -129,7 +129,7 @@ class TestRestAPI:
     @pytest.mark.asyncio
     async def test_delete_nonexistent_room(self, producer):
         """Test deleting a room that doesn't exist."""
-        workspace_id = producer._generate_workspace_id()
+        workspace_id = producer.generate_workspace_id()
         fake_room_id = "nonexistent-room-id"
         success = await producer.delete_room(workspace_id, fake_room_id)
         assert success is False
@@ -137,7 +137,7 @@ class TestRestAPI:
     @pytest.mark.asyncio
     async def test_get_room_info_nonexistent(self, producer):
         """Test getting info for a room that doesn't exist."""
-        workspace_id = producer._generate_workspace_id()
+        workspace_id = producer.generate_workspace_id()
         fake_room_id = "nonexistent-room-id"
 
         # This should raise an exception or return error info
@@ -151,7 +151,7 @@ class TestRestAPI:
     @pytest.mark.asyncio
     async def test_get_room_state_nonexistent(self, producer):
         """Test getting state for a room that doesn't exist."""
-        workspace_id = producer._generate_workspace_id()
+        workspace_id = producer.generate_workspace_id()
         fake_room_id = "nonexistent-room-id"
 
         # This should raise an exception or return error info

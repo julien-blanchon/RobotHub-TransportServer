@@ -97,7 +97,7 @@ async def simulate_robot_movement(producer: RoboticsProducer):
     for step in range(20):  # 20 movement steps
         # Occasionally set new random targets
         if step % 5 == 0:
-            for joint_name, joint_data in joints.items():
+            for joint_data in joints.values():
                 joint_data["target"] = random.uniform(
                     joint_data["min"], joint_data["max"]
                 )
@@ -203,8 +203,8 @@ async def main():
 
         logger.info("Demo completed successfully!")
 
-    except Exception as e:
-        logger.exception(f"Demo error: {e}")
+    except Exception:
+        logger.exception("Demo error")
     finally:
         # Cleanup
         logger.info("Cleaning up...")
@@ -222,8 +222,8 @@ async def main():
             try:
                 await producer.delete_room(workspace_id, room_id)
                 logger.info("Room cleaned up")
-            except Exception as e:
-                logger.warning(f"Failed to clean up room: {e}")
+            except Exception:
+                logger.exception("Failed to clean up room")
 
         logger.info("Demo cleanup completed")
 

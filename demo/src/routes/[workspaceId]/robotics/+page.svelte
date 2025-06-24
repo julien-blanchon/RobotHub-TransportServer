@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
 	import type { robotics as roboticsTypes } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -42,7 +43,7 @@
 		try {
 			loading = true;
 			error = '';
-			client = new robotics.RoboticsClientCore('http://localhost:8000');
+			client = new robotics.RoboticsClientCore(settings.transportServerUrl);
 			rooms = await client.listRooms(workspaceId);
 			debugInfo.responseTime = Date.now() - startTime;
 		} catch (err) {

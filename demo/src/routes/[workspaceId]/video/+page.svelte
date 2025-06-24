@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
 	import type { video as videoTypes } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -42,7 +44,7 @@
 		try {
 			loading = true;
 			error = '';
-			client = new video.VideoClientCore('http://localhost:8000');
+			client = new video.VideoClientCore(settings.transportServerUrl);
 			rooms = await client.listRooms(workspaceId);
 			debugInfo.responseTime = Date.now() - startTime;
 		} catch (err) {

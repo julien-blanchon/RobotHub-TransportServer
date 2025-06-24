@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -129,7 +131,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new video.VideoProducer('http://localhost:8000');
+			producer = new video.VideoProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;
@@ -193,7 +195,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new video.VideoProducer('http://localhost:8000');
+			producer = new video.VideoProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;

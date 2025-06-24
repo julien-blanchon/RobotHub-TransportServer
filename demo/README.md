@@ -59,6 +59,48 @@ demo/
 2. **LeRobot Arena Server** running on port 8000
 3. **Built JavaScript Client** (automatically installed as dependency)
 
+## ⚙️ Server Configuration
+
+The demo automatically detects the correct server URL based on the environment:
+
+- **Development mode**: `http://localhost:8000` (when running on localhost)
+- **Production mode**: `https://blanchon-robottransportserver.hf.space/api` (when deployed)
+
+### Environment Variable Override
+
+You can override the default server URL by setting the `PUBLIC_SERVER_URL` environment variable:
+
+```bash
+# For development with custom server
+export PUBLIC_SERVER_URL=http://localhost:8000
+
+# For production with HuggingFace Space
+export PUBLIC_SERVER_URL=https://blanchon-robottransportserver.hf.space/api
+
+# For custom server deployment
+export PUBLIC_SERVER_URL=https://your-custom-server.com/api
+```
+
+### Setting Environment Variables
+
+#### Option 1: Create a `.env` file
+```bash
+# In demo/.env
+PUBLIC_SERVER_URL=http://localhost:8000
+```
+
+#### Option 2: Runtime environment variable
+```bash
+# Set via window object (for runtime configuration)
+window.__SERVER_URL__ = 'http://localhost:8000';
+```
+
+#### Option 3: Build-time environment variable
+```bash
+# When building
+PUBLIC_SERVER_URL=https://your-server.com/api bun run build
+```
+
 ## 🚀 Quick Start
 
 ### 1. Install Dependencies

@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { robotics, video } from '@robothub/transport-server-client';
 	import type { robotics as roboticsTypes, video as videoTypes } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -41,7 +43,7 @@
 
 			// Load robotics rooms
 			try {
-				roboticsClient = new robotics.RoboticsClientCore('http://localhost:8000');
+				roboticsClient = new robotics.RoboticsClientCore(settings.transportServerUrl);
 				roboticsRooms = await roboticsClient.listRooms(workspaceId);
 			} catch (err) {
 				roboticsError = 'Failed to load robotics rooms';
@@ -50,7 +52,7 @@
 
 			// Load video rooms
 			try {
-				videoClient = new video.VideoClientCore('http://localhost:8000');
+				videoClient = new video.VideoClientCore(settings.transportServerUrl);
 				videoRooms = await videoClient.listRooms(workspaceId);
 			} catch (err) {
 				videoError = 'Failed to load video rooms';

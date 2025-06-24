@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { settings } from '$lib/settings.svelte.js';
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
+	
 
 	// Get data from load function
 	let { data } = $props();
@@ -98,7 +100,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new robotics.RoboticsProducer('http://localhost:8000');
+			producer = new robotics.RoboticsProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;
@@ -138,7 +140,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new robotics.RoboticsProducer('http://localhost:8000');
+			producer = new robotics.RoboticsProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;

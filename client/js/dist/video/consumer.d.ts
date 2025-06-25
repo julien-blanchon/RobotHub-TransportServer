@@ -13,7 +13,7 @@ export declare class VideoConsumer extends VideoClientCore {
     private onStreamStatsCallback;
     private iceCandidateQueue;
     private hasRemoteDescription;
-    constructor(baseUrl?: string, options?: ClientOptions);
+    constructor(baseUrl: string, options?: ClientOptions);
     connect(workspaceId: string, roomId: string, participantId?: string): Promise<boolean>;
     startReceiving(): Promise<void>;
     stopReceiving(): Promise<void>;
@@ -40,7 +40,7 @@ export declare class VideoConsumer extends VideoClientCore {
     /**
      * Create a consumer and automatically connect to a room
      */
-    static createAndConnect(workspaceId: string, roomId: string, baseUrl?: string, participantId?: string): Promise<VideoConsumer>;
+    static createAndConnect(workspaceId: string, roomId: string, baseUrl: string, participantId?: string): Promise<VideoConsumer>;
     /**
      * Get the video element for displaying the remote stream
      */

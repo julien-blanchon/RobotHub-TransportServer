@@ -5,7 +5,7 @@ import { VideoClientCore } from './core.js';
 import type { WebSocketMessage, ClientOptions, VideoConfig } from './types.js';
 export declare class VideoProducer extends VideoClientCore {
     private consumerConnections;
-    constructor(baseUrl?: string, options?: ClientOptions);
+    constructor(baseUrl: string, options?: ClientOptions);
     connect(workspaceId: string, roomId: string, participantId?: string): Promise<boolean>;
     private connectToExistingConsumers;
     private createPeerConnectionForConsumer;
@@ -28,7 +28,7 @@ export declare class VideoProducer extends VideoClientCore {
     /**
      * Create a room and automatically connect as producer
      */
-    static createAndConnect(baseUrl?: string, workspaceId?: string, roomId?: string, participantId?: string): Promise<VideoProducer>;
+    static createAndConnect(baseUrl: string, workspaceId?: string, roomId?: string, participantId?: string): Promise<VideoProducer>;
     /**
      * Get the current room ID (useful when auto-created)
      */

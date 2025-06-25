@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
-	import { settings } from '$lib/settings.svelte.js';
+	import { settings } from '$lib/settings.svelte';
 	
 
 	// Get data from load function
@@ -439,9 +439,9 @@
 							{@const limits = jointLimits[jointName as JointName]}
 							<div class="rounded border bg-gray-50 p-4">
 								<div class="mb-2 flex items-center justify-between">
-									<label class="font-mono text-sm font-medium capitalize text-gray-700">
+									<div class="font-mono text-sm font-medium capitalize text-gray-700">
 										{jointName.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
-									</label>
+									</div>
 									<span class="font-mono text-sm font-bold text-blue-600">
 										{value.toFixed(1)}°
 									</span>
@@ -515,54 +515,3 @@
 		</div>
 	{/if}
 </div>
-
-<style>
-	.robot-slider {
-		-webkit-appearance: none;
-		appearance: none;
-		height: 8px;
-		border-radius: 4px;
-		background: #e5e7eb;
-		outline: none;
-		transition: background 0.3s ease;
-	}
-
-	.robot-slider:hover {
-		background: #d1d5db;
-	}
-
-	.robot-slider::-webkit-slider-thumb {
-		-webkit-appearance: none;
-		appearance: none;
-		width: 24px;
-		height: 24px;
-		border-radius: 50%;
-		background: #3b82f6;
-		cursor: pointer;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		transition: all 0.2s ease;
-	}
-
-	.robot-slider::-webkit-slider-thumb:hover {
-		background: #2563eb;
-		transform: scale(1.1);
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	}
-
-	.robot-slider::-moz-range-thumb {
-		width: 24px;
-		height: 24px;
-		border-radius: 50%;
-		background: #3b82f6;
-		cursor: pointer;
-		border: none;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-		transition: all 0.2s ease;
-	}
-
-	.robot-slider::-moz-range-thumb:hover {
-		background: #2563eb;
-		transform: scale(1.1);
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-	}
-</style> 

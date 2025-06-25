@@ -5,12 +5,15 @@ FROM oven/bun:1-alpine AS frontend-builder
 ARG PUBLIC_TRANSPORT_SERVER_URL=https://blanchon-robothub-transportserver.hf.space/api
 ENV PUBLIC_TRANSPORT_SERVER_URL=${PUBLIC_TRANSPORT_SERVER_URL}
 
+ARG PORT=8000
+ENV PORT=${PORT}
+
 WORKDIR /app
 
 # Install git for dependencies that might need it
 RUN apk add --no-cache git
 
-# Copy package files for better caching
+# Copy client and demo package files for better caching
 COPY client/js/package.json client/js/tsconfig.json* ./client/js/
 COPY demo/package.json demo/tsconfig.json* demo/svelte.config.js* ./demo/
 
@@ -45,8 +48,7 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_SYSTEM_PYTHON=1 \
     UV_COMPILE_BYTECODE=1 \
-    UV_CACHE_DIR=/tmp/uv-cache \
-    PORT=8000
+    UV_CACHE_DIR=/tmp/uv-cache
 
 # Install system dependencies needed for video processing
 RUN apt-get update && apt-get install -y \

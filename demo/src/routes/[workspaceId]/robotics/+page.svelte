@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
 	import type { robotics as roboticsTypes } from '@robothub/transport-server-client';
-	import { settings } from '$lib/settings.svelte.js';
+	import { settings } from '$lib/settings.svelte';
 	
 
 	// Get data from load function

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
 	import type { video as videoTypes } from '@robothub/transport-server-client';
-	import { settings } from '$lib/settings.svelte.js';
+	import { settings } from '$lib/settings.svelte';
 	
 
 	// Get data from load function

@@ -21,7 +21,7 @@ export declare class VideoClientCore extends EventEmitter {
     protected onErrorCallback: ErrorCallback | null;
     protected onConnectedCallback: ConnectedCallback | null;
     protected onDisconnectedCallback: DisconnectedCallback | null;
-    constructor(baseUrl?: string, options?: ClientOptions);
+    constructor(baseUrl: string, options?: ClientOptions);
     listRooms(workspaceId: string): Promise<RoomInfo[]>;
     createRoom(workspaceId?: string, roomId?: string, config?: VideoConfig, recoveryConfig?: RecoveryConfig): Promise<{
         workspaceId: string;

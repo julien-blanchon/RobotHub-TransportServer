@@ -6,7 +6,7 @@ import type { WebSocketMessage, ClientOptions, JointUpdateCallback, StateSyncCal
 export declare class RoboticsConsumer extends RoboticsClientCore {
     private onStateSyncCallback;
     private onJointUpdateCallback;
-    constructor(baseUrl?: string, options?: ClientOptions);
+    constructor(baseUrl: string, options?: ClientOptions);
     connect(workspaceId: string, roomId: string, participantId?: string): Promise<boolean>;
     getStateSyncAsync(): Promise<Record<string, number>>;
     onStateSync(callback: StateSyncCallback): void;
@@ -17,5 +17,5 @@ export declare class RoboticsConsumer extends RoboticsClientCore {
     /**
      * Create a consumer and automatically connect to a room
      */
-    static createAndConnect(workspaceId: string, roomId: string, baseUrl?: string, participantId?: string): Promise<RoboticsConsumer>;
+    static createAndConnect(workspaceId: string, roomId: string, baseUrl: string, participantId?: string): Promise<RoboticsConsumer>;
 }

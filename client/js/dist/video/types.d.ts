@@ -1,6 +1,5 @@
 /**
  * Type definitions for RobotHub TransportServer Video Client
- * ✅ Fully synchronized with server-side models.py
  */
 export type ParticipantRole = 'producer' | 'consumer';
 export type MessageType = 'frame_update' | 'video_config_update' | 'stream_started' | 'stream_stopped' | 'recovery_triggered' | 'heartbeat' | 'heartbeat_ack' | 'emergency_stop' | 'joined' | 'error' | 'participant_joined' | 'participant_left' | 'webrtc_offer' | 'webrtc_answer' | 'webrtc_ice' | 'status_update' | 'stream_stats';

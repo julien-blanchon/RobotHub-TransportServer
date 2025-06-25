@@ -232,7 +232,7 @@ class RoboticsClientCore extends import__.default {
   onErrorCallback = null;
   onConnectedCallback = null;
   onDisconnectedCallback = null;
-  constructor(baseUrl = "http://localhost:8000", options = {}) {
+  constructor(baseUrl, options = {}) {
     super();
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.apiBase = `${this.baseUrl}/robotics`;
@@ -427,7 +427,7 @@ class RoboticsClientCore extends import__.default {
 }
 // src/robotics/producer.ts
 class RoboticsProducer extends RoboticsClientCore {
-  constructor(baseUrl = "http://localhost:8000", options = {}) {
+  constructor(baseUrl, options = {}) {
     super(baseUrl, options);
   }
   async connect(workspaceId, roomId, participantId) {
@@ -479,7 +479,7 @@ class RoboticsProducer extends RoboticsClientCore {
         console.warn(`Unknown message type for producer: ${message.type}`);
     }
   }
-  static async createAndConnect(baseUrl = "http://localhost:8000", workspaceId, roomId, participantId) {
+  static async createAndConnect(baseUrl, workspaceId, roomId, participantId) {
     const producer = new RoboticsProducer(baseUrl);
     const roomData = await producer.createRoom(workspaceId, roomId);
     const connected = await producer.connect(roomData.workspaceId, roomData.roomId, participantId);
@@ -496,7 +496,7 @@ class RoboticsProducer extends RoboticsClientCore {
 class RoboticsConsumer extends RoboticsClientCore {
   onStateSyncCallback = null;
   onJointUpdateCallback = null;
-  constructor(baseUrl = "http://localhost:8000", options = {}) {
+  constructor(baseUrl, options = {}) {
     super(baseUrl, options);
   }
   async connect(workspaceId, roomId, participantId) {
@@ -547,7 +547,7 @@ class RoboticsConsumer extends RoboticsClientCore {
     }
     this.emit("jointUpdate", message.data);
   }
-  static async createAndConnect(workspaceId, roomId, baseUrl = "http://localhost:8000", participantId) {
+  static async createAndConnect(workspaceId, roomId, baseUrl, participantId) {
     const consumer = new RoboticsConsumer(baseUrl);
     const connected = await consumer.connect(workspaceId, roomId, participantId);
     if (!connected) {
@@ -557,7 +557,7 @@ class RoboticsConsumer extends RoboticsClientCore {
   }
 }
 // src/robotics/factory.ts
-function createClient(role, baseUrl = "http://localhost:8000", options = {}) {
+function createClient(role, baseUrl, options = {}) {
   if (role === "producer") {
     return new RoboticsProducer(baseUrl, options);
   }
@@ -566,7 +566,7 @@ function createClient(role, baseUrl = "http://localhost:8000", options = {}) {
   }
   throw new Error(`Invalid role: ${role}. Must be 'producer' or 'consumer'`);
 }
-async function createProducerClient(baseUrl = "http://localhost:8000", workspaceId, roomId, participantId, options = {}) {
+async function createProducerClient(baseUrl, workspaceId, roomId, participantId, options = {}) {
   const producer = new RoboticsProducer(baseUrl, options);
   const roomData = await producer.createRoom(workspaceId, roomId);
   const connected = await producer.connect(roomData.workspaceId, roomData.roomId, participantId);
@@ -575,7 +575,7 @@ async function createProducerClient(baseUrl = "http://localhost:8000", workspace
   }
   return producer;
 }
-async function createConsumerClient(workspaceId, roomId, baseUrl = "http://localhost:8000", participantId, options = {}) {
+async function createConsumerClient(workspaceId, roomId, baseUrl, participantId, options = {}) {
   const consumer = new RoboticsConsumer(baseUrl, options);
   const connected = await consumer.connect(workspaceId, roomId, participantId);
   if (!connected) {
@@ -612,7 +612,7 @@ class VideoClientCore extends import__.default {
   onErrorCallback = null;
   onConnectedCallback = null;
   onDisconnectedCallback = null;
-  constructor(baseUrl = "http://localhost:8000", options = {}) {
+  constructor(baseUrl, options = {}) {
     super();
     this.baseUrl = baseUrl.replace(/\/$/, "");
     this.apiBase = `${this.baseUrl}/video`;
@@ -983,7 +983,7 @@ class VideoClientCore extends import__.default {
 // src/video/producer.ts
 class VideoProducer extends VideoClientCore {
   consumerConnections = new Map;
-  constructor(baseUrl = "http://localhost:8000", options = {}) {
+  constructor(baseUrl, options = {}) {
     super(baseUrl, options);
   }
   async connect(workspaceId, roomId, participantId) {
@@ -1275,7 +1275,7 @@ class VideoProducer extends VideoClientCore {
     this.websocket.send(JSON.stringify(message));
     this.emit("streamStopped");
   }
-  static async createAndConnect(baseUrl = "http://localhost:8000", workspaceId, roomId, participantId) {
+  static async createAndConnect(baseUrl, workspaceId, roomId, participantId) {
     const producer = new VideoProducer(baseUrl);
     const roomData = await producer.createRoom(workspaceId, roomId);
     const connected = await producer.connect(roomData.workspaceId, roomData.roomId, participantId);
@@ -1299,7 +1299,7 @@ class VideoConsumer extends VideoClientCore {
   onStreamStatsCallback = null;
   iceCandidateQueue = [];
   hasRemoteDescription = false;
-  constructor(baseUrl = "http://localhost:8000", options = {}) {
+  constructor(baseUrl, options = {}) {
     super(baseUrl, options);
   }
   async connect(workspaceId, roomId, participantId) {
@@ -1563,7 +1563,7 @@ class VideoConsumer extends VideoClientCore {
     }
     this.emit("streamStats", message.stats);
   }
-  static async createAndConnect(workspaceId, roomId, baseUrl = "http://localhost:8000", participantId) {
+  static async createAndConnect(workspaceId, roomId, baseUrl, participantId) {
     const consumer = new VideoConsumer(baseUrl);
     const connected = await consumer.connect(workspaceId, roomId, participantId);
     if (!connected) {
@@ -1585,7 +1585,7 @@ class VideoConsumer extends VideoClientCore {
   }
 }
 // src/video/factory.ts
-function createClient2(role, baseUrl = "http://localhost:8000", options = {}) {
+function createClient2(role, baseUrl, options = {}) {
   if (role === "producer") {
     return new VideoProducer(baseUrl, options);
   }
@@ -1594,7 +1594,7 @@ function createClient2(role, baseUrl = "http://localhost:8000", options = {}) {
   }
   throw new Error(`Invalid role: ${role}. Must be 'producer' or 'consumer'`);
 }
-async function createProducerClient2(baseUrl = "http://localhost:8000", workspaceId, roomId, participantId, options = {}) {
+async function createProducerClient2(baseUrl, workspaceId, roomId, participantId, options = {}) {
   const producer = new VideoProducer(baseUrl, options);
   const roomData = await producer.createRoom(workspaceId, roomId);
   const connected = await producer.connect(roomData.workspaceId, roomData.roomId, participantId);
@@ -1603,7 +1603,7 @@ async function createProducerClient2(baseUrl = "http://localhost:8000", workspac
   }
   return producer;
 }
-async function createConsumerClient2(workspaceId, roomId, baseUrl = "http://localhost:8000", participantId, options = {}) {
+async function createConsumerClient2(workspaceId, roomId, baseUrl, participantId, options = {}) {
   const consumer = new VideoConsumer(baseUrl, options);
   const connected = await consumer.connect(workspaceId, roomId, participantId);
   if (!connected) {
@@ -1619,5 +1619,5 @@ export {
   VERSION
 };
 
-//# debugId=DEA97CEBB2EADB0264756E2164756E21
+//# debugId=836AB17011247B3F64756E2164756E21
 //# sourceMappingURL=index.js.map

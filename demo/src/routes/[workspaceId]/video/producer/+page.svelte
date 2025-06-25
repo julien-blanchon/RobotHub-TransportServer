@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
-	import { settings } from '$lib/settings.svelte.js';
+	import { settings } from '$lib/settings.svelte';
 	
 
 	// Get data from load function
@@ -416,9 +416,9 @@
 
 				<!-- Quality Presets -->
 				<div>
-					<label class="mb-2 block font-mono text-sm font-medium text-gray-700">
+					<div class="mb-2 block font-mono text-sm font-medium text-gray-700">
 						Quality Presets
-					</label>
+					</div>
 					<div class="grid grid-cols-1 gap-2">
 						{#each qualityPresets as preset}
 							<button

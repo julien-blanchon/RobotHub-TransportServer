@@ -107,7 +107,7 @@ else:
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 7860))
-    host = os.getenv("HOST", "0.0.0.0")
+    host = os.getenv("HOST", "localhost")
 
     logger.info("🤖 Starting RobotHub TransportServer Combined Server...")
     logger.info(f"   - API available at: http://{host}:{port}/api/")

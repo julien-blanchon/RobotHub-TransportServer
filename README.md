@@ -4,7 +4,7 @@ emoji: 🤖
 colorFrom: blue
 colorTo: purple
 sdk: docker
-app_port: 7860
+app_port: 8000
 suggested_hardware: cpu-upgrade
 suggested_storage: small
 short_description: Real-time robotics control and video streaming platform

@@ -41,7 +41,8 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     UV_SYSTEM_PYTHON=1 \
     UV_COMPILE_BYTECODE=1 \
-    UV_CACHE_DIR=/tmp/uv-cache
+    UV_CACHE_DIR=/tmp/uv-cache \
+    PORT=8000
 
 # Install system dependencies needed for video processing
 RUN apt-get update && apt-get install -y \
@@ -106,12 +107,12 @@ WORKDIR /app
 # Add virtual environment to PATH
 ENV PATH="/app/server/.venv/bin:$PATH"
 
-# Expose port 7860 (HuggingFace Spaces default)
-EXPOSE 7860
+# Expose the configured port (default 8000)
+EXPOSE ${PORT}
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:7860/health')" || exit 1
+    CMD python -c "import urllib.request; urllib.request.urlopen(f'http://localhost:${PORT}/health')" || exit 1
 
 # Start the FastAPI server (serves both frontend and backend)
-CMD ["sh", "-c", "cd server && SERVE_FRONTEND=true uv run python launch_with_ui.py --host 0.0.0.0 --port 7860"] 
+CMD ["sh", "-c", "cd server && SERVE_FRONTEND=true uv run python launch_with_ui.py --host localhost --port ${PORT}"] 

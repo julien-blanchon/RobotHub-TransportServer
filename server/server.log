@@ -2949,3 +2949,53 @@ RuntimeError: WebSocket is not connected. Need to call "accept" first.
 2025-06-24 23:21:44,637 - src.robotics.core - INFO - Producer producer_1750800104635_8x1wksqls left room 2d5e7658-50e7-4353-984a-3f242071514c in workspace 66f07ebe-6ed2-474a-83b8-961f30d15134
 2025-06-24 23:21:44,637 - src.robotics.core - INFO - Deleted room 2d5e7658-50e7-4353-984a-3f242071514c from workspace 66f07ebe-6ed2-474a-83b8-961f30d15134
 2025-06-24 23:21:44,643 - src.video.core - INFO - Producer producer_1750800100711_nxb7n7u43 left video room 4995e7c2-a10c-4017-b49d-9bcb60468ad9 in workspace 72b50832-75e5-447c-b8b5-07837b54c0fc
+2025-06-25 01:50:30,088 - __main__ - INFO - 🤖 Starting RobotHub TransportServer API Server (Hot Reload Mode)...
+2025-06-25 01:50:30,088 - __main__ - INFO -    - API available at: http://localhost:8000/
+2025-06-25 01:50:30,088 - __main__ - INFO -    - API docs at: http://localhost:8000/docs
+2025-06-25 01:50:30,088 - __main__ - INFO -    - Hot reload enabled for development
+2025-06-25 01:50:57,314 - src.video.core - INFO - Created video room quick-example-1750809057304-front in workspace 095e87f9-6331-4c0a-b13c-ede63936ef78
+2025-06-25 01:50:57,319 - src.robotics.core - INFO - Created room quick-example-1750809057304-joint-input in workspace 095e87f9-6331-4c0a-b13c-ede63936ef78
+2025-06-25 01:50:57,321 - src.robotics.core - INFO - Created room quick-example-1750809057304-joint-output in workspace 095e87f9-6331-4c0a-b13c-ede63936ef78
+2025-06-25 01:51:08,913 - watchfiles.main - INFO - 3 changes detected
+2025-06-25 01:51:25,277 - src.video.core - INFO - Created video room quick-example-1750809085270-front in workspace f0e7d351-fb17-4bfa-8285-6d24f6887bbd
+2025-06-25 01:51:25,282 - src.robotics.core - INFO - Created room quick-example-1750809085270-joint-input in workspace f0e7d351-fb17-4bfa-8285-6d24f6887bbd
+2025-06-25 01:51:25,283 - src.robotics.core - INFO - Created room quick-example-1750809085270-joint-output in workspace f0e7d351-fb17-4bfa-8285-6d24f6887bbd
+2025-06-25 01:52:33,163 - src.video.core - INFO - Created video room quick-example-1750809153152-front in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:33,168 - src.robotics.core - INFO - Created room quick-example-1750809153152-joint-input in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:33,169 - src.robotics.core - INFO - Created room quick-example-1750809153152-joint-output in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:42,075 - src.video.core - INFO - Consumer quick-example-1750809153152-front-consumer joined video room quick-example-1750809153152-front in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:42,581 - src.robotics.core - INFO - Consumer quick-example-1750809153152-joint-input-consumer joined room quick-example-1750809153152-joint-input in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:42,585 - src.robotics.core - INFO - Producer quick-example-1750809153152-joint-output-producer joined room quick-example-1750809153152-joint-output in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:44,608 - src.video.core - INFO - Consumer quick-example-1750809153152-front-consumer left video room quick-example-1750809153152-front in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:44,611 - src.robotics.core - INFO - Consumer quick-example-1750809153152-joint-input-consumer left room quick-example-1750809153152-joint-input in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:52:44,612 - src.robotics.core - INFO - Producer quick-example-1750809153152-joint-output-producer left room quick-example-1750809153152-joint-output in workspace 117d5428-eca1-455f-a8c3-1e27c311213e
+2025-06-25 01:53:27,540 - src.video.core - INFO - Created video room quick-example-1750809207533-front in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:27,543 - src.robotics.core - INFO - Created room quick-example-1750809207533-joint-input in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:27,545 - src.robotics.core - INFO - Created room quick-example-1750809207533-joint-output in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:29,118 - src.video.core - INFO - Consumer quick-example-1750809207533-front-consumer joined video room quick-example-1750809207533-front in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:29,627 - src.robotics.core - INFO - Consumer quick-example-1750809207533-joint-input-consumer joined room quick-example-1750809207533-joint-input in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:29,631 - src.robotics.core - INFO - Producer quick-example-1750809207533-joint-output-producer joined room quick-example-1750809207533-joint-output in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:31,654 - src.video.core - INFO - Consumer quick-example-1750809207533-front-consumer left video room quick-example-1750809207533-front in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:31,660 - src.robotics.core - INFO - Consumer quick-example-1750809207533-joint-input-consumer left room quick-example-1750809207533-joint-input in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:31,661 - src.robotics.core - INFO - Producer quick-example-1750809207533-joint-output-producer left room quick-example-1750809207533-joint-output in workspace 05a016a6-04f8-428e-8ca1-ecf1c01f8886
+2025-06-25 01:53:39,480 - src.video.core - INFO - Created video room example-session-1750809219478-front in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:39,481 - src.video.core - INFO - Created video room example-session-1750809219478-wrist in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:39,482 - src.robotics.core - INFO - Created room example-session-1750809219478-joint-input in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:39,483 - src.robotics.core - INFO - Created room example-session-1750809219478-joint-output in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:41,045 - src.video.core - INFO - Consumer example-session-1750809219478-front-consumer joined video room example-session-1750809219478-front in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:41,554 - src.video.core - INFO - Consumer example-session-1750809219478-wrist-consumer joined video room example-session-1750809219478-wrist in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:42,059 - src.robotics.core - INFO - Consumer example-session-1750809219478-joint-input-consumer joined room example-session-1750809219478-joint-input in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:42,063 - src.robotics.core - INFO - Producer example-session-1750809219478-joint-output-producer joined room example-session-1750809219478-joint-output in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:52,092 - src.video.core - INFO - Consumer example-session-1750809219478-front-consumer left video room example-session-1750809219478-front in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:52,094 - src.video.core - INFO - Consumer example-session-1750809219478-wrist-consumer left video room example-session-1750809219478-wrist in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:52,094 - src.robotics.core - INFO - Consumer example-session-1750809219478-joint-input-consumer left room example-session-1750809219478-joint-input in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:53:52,094 - src.robotics.core - INFO - Producer example-session-1750809219478-joint-output-producer left room example-session-1750809219478-joint-output in workspace 756391fd-94b7-46dd-ad05-09def2b8c5e5
+2025-06-25 01:55:11,230 - src.video.core - INFO - Created video room my-robot-01-front in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:11,248 - src.robotics.core - INFO - Created room my-robot-01-joint-input in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:11,254 - src.robotics.core - INFO - Created room my-robot-01-joint-output in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:12,987 - src.video.core - INFO - Consumer my-robot-01-front-consumer joined video room my-robot-01-front in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:13,501 - src.robotics.core - INFO - Consumer my-robot-01-joint-input-consumer joined room my-robot-01-joint-input in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:13,504 - src.robotics.core - INFO - Producer my-robot-01-joint-output-producer joined room my-robot-01-joint-output in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:13,508 - src.video.core - INFO - Consumer my-robot-01-front-consumer left video room my-robot-01-front in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:13,509 - src.robotics.core - INFO - Consumer my-robot-01-joint-input-consumer left room my-robot-01-joint-input in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 01:55:13,509 - src.robotics.core - INFO - Producer my-robot-01-joint-output-producer left room my-robot-01-joint-output in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831

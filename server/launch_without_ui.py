@@ -14,8 +14,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
-    host = os.getenv("HOST", "localhost")
+    port = int(os.getenv("PORT", "8000"))
+    host = os.getenv("HOST", "0.0.0.0")
 
     logger.info("🤖 Starting RobotHub TransportServer API Server (Hot Reload Mode)...")
     logger.info(f"   - API available at: http://{host}:{port}/")

@@ -2999,3 +2999,23 @@ RuntimeError: WebSocket is not connected. Need to call "accept" first.
 2025-06-25 01:55:13,508 - src.video.core - INFO - Consumer my-robot-01-front-consumer left video room my-robot-01-front in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
 2025-06-25 01:55:13,509 - src.robotics.core - INFO - Consumer my-robot-01-joint-input-consumer left room my-robot-01-joint-input in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
 2025-06-25 01:55:13,509 - src.robotics.core - INFO - Producer my-robot-01-joint-output-producer left room my-robot-01-joint-output in workspace 3a6e0b4d-21e1-4625-9af9-61bc8cabe831
+2025-06-25 14:53:07,493 - __main__ - INFO - 🤖 Starting RobotHub TransportServer Combined Server...
+2025-06-25 14:53:07,493 - __main__ - INFO -    - API available at: http://localhost:8000/api/
+2025-06-25 14:53:07,493 - __main__ - INFO -    - API docs at: http://localhost:8000/api/docs
+2025-06-25 14:53:07,493 - __main__ - INFO -    - Frontend disabled (set SERVE_FRONTEND=true to enable)
+2025-06-25 14:53:38,302 - __main__ - WARNING - Frontend path not found: /Users/julienblanchon/Git/lerobot-arena/repo/frontend/external/RobotHub-InferenceServer/external/RobotHub-TransportServer/static-frontend
+2025-06-25 14:53:38,302 - __main__ - INFO - 🤖 Starting RobotHub TransportServer Combined Server...
+2025-06-25 14:53:38,302 - __main__ - INFO -    - API available at: http://localhost:8000/api/
+2025-06-25 14:53:38,302 - __main__ - INFO -    - API docs at: http://localhost:8000/api/docs
+2025-06-25 14:53:38,302 - __main__ - INFO -    - Frontend available at: http://localhost:8000/
+2025-06-25 14:53:38,322 - launch_with_ui - WARNING - Frontend path not found: /Users/julienblanchon/Git/lerobot-arena/repo/frontend/external/RobotHub-InferenceServer/external/RobotHub-TransportServer/static-frontend
+2025-06-25 14:56:35,084 - __main__ - INFO - 🤖 Starting RobotHub TransportServer Combined Server...
+2025-06-25 14:56:35,084 - __main__ - INFO -    - API available at: http://localhost:8000/api/
+2025-06-25 14:56:35,084 - __main__ - INFO -    - API docs at: http://localhost:8000/api/docs
+2025-06-25 14:56:35,084 - __main__ - INFO -    - Frontend disabled (set SERVE_FRONTEND=true to enable)
+2025-06-25 14:56:48,317 - __main__ - WARNING - Frontend path not found: /Users/julienblanchon/Git/lerobot-arena/repo/frontend/external/RobotHub-InferenceServer/external/RobotHub-TransportServer/static-frontend
+2025-06-25 14:56:48,317 - __main__ - INFO - 🤖 Starting RobotHub TransportServer Combined Server...
+2025-06-25 14:56:48,318 - __main__ - INFO -    - API available at: http://localhost:8000/api/
+2025-06-25 14:56:48,318 - __main__ - INFO -    - API docs at: http://localhost:8000/api/docs
+2025-06-25 14:56:48,318 - __main__ - INFO -    - Frontend available at: http://localhost:8000/
+2025-06-25 14:56:48,336 - launch_with_ui - WARNING - Frontend path not found: /Users/julienblanchon/Git/lerobot-arena/repo/frontend/external/RobotHub-InferenceServer/external/RobotHub-TransportServer/static-frontend

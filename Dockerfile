@@ -121,4 +121,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen(f'http://localhost:${PORT}/health')" || exit 1
 
 # Start the FastAPI server (serves both frontend and backend)
-CMD ["sh", "-c", "cd server && SERVE_FRONTEND=true uv run python launch_with_ui.py --host localhost --port ${PORT}"] 
+CMD ["sh", "-c", "cd server && SERVE_FRONTEND=true uv run python launch_with_ui.py --host 0.0.0.0 --port ${PORT}"] 

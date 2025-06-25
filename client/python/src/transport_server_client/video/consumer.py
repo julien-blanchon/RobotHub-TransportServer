@@ -32,7 +32,7 @@ class VideoConsumer(VideoClientCore):
 
     def __init__(
         self,
-        base_url: str = "http://localhost:8000",
+        base_url: str,
         options: ClientOptions | None = None,
     ):
         super().__init__(base_url, options)
@@ -588,7 +588,7 @@ class VideoConsumer(VideoClientCore):
     async def create_and_connect(
         workspace_id: str,
         room_id: str,
-        base_url: str = "http://localhost:8000",
+        base_url: str,
         participant_id: str | None = None,
     ) -> "VideoConsumer":
         """Create a consumer and automatically connect to a room"""

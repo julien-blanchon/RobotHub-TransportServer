@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
+	import { settings } from '$lib/settings.svelte.js';
 	
 
 	// Get data from load function
@@ -79,7 +80,7 @@
 			connecting = true;
 			error = '';
 
-			consumer = new video.VideoConsumer('https://blanchon-robothub-transportserver.hf.space/api');
+			consumer = new video.VideoConsumer(settings.transportServerUrl);
 
 			// Set up event handlers
 			consumer.onConnected(() => {

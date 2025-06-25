@@ -19,25 +19,25 @@ describe("Factory Functions", () => {
     });
 
     test("create client producer", () => {
-        const client = createClient("producer");
+        const client = createClient("producer", TEST_SERVER_URL);
         expect(client).toBeInstanceOf(RoboticsProducer);
         expect(client.isConnected()).toBe(false);
         expect(client.getConnectionInfo().base_url).toBe("http://localhost:8000");
     });
 
     test("create client consumer", () => {
-        const client = createClient("consumer");
+        const client = createClient("consumer", TEST_SERVER_URL);
         expect(client).toBeInstanceOf(RoboticsConsumer);
         expect(client.isConnected()).toBe(false);
         expect(client.getConnectionInfo().base_url).toBe("http://localhost:8000");
     });
 
     test("create client invalid role", () => {
-        expect(() => createClient("invalid_role" as any)).toThrow("Invalid role");
+        expect(() => createClient("invalid_role" as any, TEST_SERVER_URL)).toThrow("Invalid role");
     });
 
     test("create client default url", () => {
-        const client = createClient("producer");
+        const client = createClient("producer", TEST_SERVER_URL);
         expect(client.getConnectionInfo().base_url).toBe("http://localhost:8000");
     });
 
@@ -152,7 +152,7 @@ describe("Factory Functions", () => {
     });
 
     test("convenience functions with default url", async () => {
-        const producer = await createProducerClient();
+        const producer = await createProducerClient(TEST_SERVER_URL);
         const producerInfo = producer.getConnectionInfo();
         const workspaceId = producerInfo.workspace_id!;
         const roomId = producerInfo.room_id!;
@@ -162,7 +162,7 @@ describe("Factory Functions", () => {
             expect(producerInfo.base_url).toBe("http://localhost:8000");
             expect(producer.isConnected()).toBe(true);
 
-            const consumer = await createConsumerClient(workspaceId, roomId);
+            const consumer = await createConsumerClient(workspaceId, roomId, TEST_SERVER_URL);
 
             try {
                 const consumerInfo = consumer.getConnectionInfo();

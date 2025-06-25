@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { robotics } from '@robothub/transport-server-client';
+	import { settings } from '$lib/settings.svelte.js';
 	
 
 	// Get data from load function
@@ -99,7 +100,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new robotics.RoboticsProducer('https://blanchon-robothub-transportserver.hf.space/api');
+			producer = new robotics.RoboticsProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;
@@ -139,7 +140,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new robotics.RoboticsProducer('https://blanchon-robothub-transportserver.hf.space/api');
+			producer = new robotics.RoboticsProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { video } from '@robothub/transport-server-client';
+	import { settings } from '$lib/settings.svelte.js';
 	
 
 	// Get data from load function
@@ -31,7 +32,7 @@
 
 	// Media stream
 	let localVideoStream = $state<MediaStream | null>(null);
-	let localVideoRef: HTMLVideoElement;
+	let localVideoRef: HTMLVideoElement | null = $state(null);
 
 	// Available video devices
 	let videoDevices = $state<MediaDeviceInfo[]>([]);
@@ -194,7 +195,7 @@
 			connecting = true;
 			error = '';
 
-			producer = new video.VideoProducer('https://blanchon-robothub-transportserver.hf.space/api');
+			producer = new video.VideoProducer(settings.transportServerUrl);
 
 			producer.onConnected(() => {
 				connected = true;

@@ -17,7 +17,7 @@ export class RoboticsConsumer extends RoboticsClientCore {
   private onStateSyncCallback: StateSyncCallback | null = null;
   private onJointUpdateCallback: JointUpdateCallback | null = null;
 
-  constructor(baseUrl = 'http://localhost:8000', options: ClientOptions = {}) {
+  constructor(baseUrl: string, options: ClientOptions = {}) {
     super(baseUrl, options);
   }
 
@@ -93,7 +93,7 @@ export class RoboticsConsumer extends RoboticsClientCore {
   static async createAndConnect(
     workspaceId: string,
     roomId: string,
-    baseUrl = 'http://localhost:8000',
+    baseUrl: string,
     participantId?: string
   ): Promise<RoboticsConsumer> {
     const consumer = new RoboticsConsumer(baseUrl);

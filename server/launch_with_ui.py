@@ -106,7 +106,7 @@ else:
 
 
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 7860))
+    port = int(os.getenv("PORT", 8000))
     host = os.getenv("HOST", "localhost")
 
     logger.info("🤖 Starting RobotHub TransportServer Combined Server...")

@@ -11,7 +11,7 @@ import type {
 } from './types.js';
 
 export class RoboticsProducer extends RoboticsClientCore {
-  constructor(baseUrl = 'http://localhost:8000', options: ClientOptions = {}) {
+  constructor(baseUrl: string, options: ClientOptions = {}) {
     super(baseUrl, options);
   }
 
@@ -88,7 +88,7 @@ export class RoboticsProducer extends RoboticsClientCore {
    * Create a room and automatically connect as producer
    */
   static async createAndConnect(
-    baseUrl = 'http://localhost:8000',
+    baseUrl: string,
     workspaceId?: string,
     roomId?: string,
     participantId?: string

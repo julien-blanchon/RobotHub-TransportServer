@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class RoboticsClientCore:
     """Base client for RobotHub TransportServer robotics API"""
 
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str):
         self.base_url = base_url.rstrip("/")
         self.api_base = f"{self.base_url}/robotics"
 
@@ -314,7 +314,7 @@ class RoboticsClientCore:
 class RoboticsProducer(RoboticsClientCore):
     """Producer client for controlling robots"""
 
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str):
         super().__init__(base_url)
         self._on_error_callback: Callable[[str], None] | None = None
         self._on_connected_callback: Callable[[], None] | None = None
@@ -401,7 +401,7 @@ class RoboticsProducer(RoboticsClientCore):
 class RoboticsConsumer(RoboticsClientCore):
     """Consumer client for receiving robot commands"""
 
-    def __init__(self, base_url: str = "http://localhost:8000"):
+    def __init__(self, base_url: str):
         super().__init__(base_url)
         self._on_state_sync_callback: Callable[[dict], None] | None = None
         self._on_joint_update_callback: Callable[[list], None] | None = None
@@ -492,7 +492,7 @@ class RoboticsConsumer(RoboticsClientCore):
 # ============= FACTORY FUNCTIONS =============
 
 
-def create_client(role: str, base_url: str = "http://localhost:8000"):
+def create_client(role: str, base_url: str):
     """Factory function to create the appropriate client based on role"""
     if role == "producer":
         return RoboticsProducer(base_url)
@@ -503,7 +503,7 @@ def create_client(role: str, base_url: str = "http://localhost:8000"):
 
 
 async def create_producer_client(
-    base_url: str = "http://localhost:8000",
+    base_url: str,
     workspace_id: str | None = None,
     room_id: str | None = None,
 ) -> RoboticsProducer:
@@ -516,7 +516,7 @@ async def create_producer_client(
 
 
 async def create_consumer_client(
-    workspace_id: str, room_id: str, base_url: str = "http://localhost:8000"
+    workspace_id: str, room_id: str, base_url: str
 ) -> RoboticsConsumer:
     """Create and connect a consumer client"""
     client = RoboticsConsumer(base_url)

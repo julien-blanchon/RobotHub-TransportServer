@@ -14,7 +14,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 CONTAINER_NAME="robothub-transport-server-test"
-PORT=7860
+PORT=8000
 MAX_WAIT=60
 
 # Cleanup function
@@ -39,7 +39,7 @@ echo -e "${GREEN}✅ Docker image built successfully${NC}"
 echo -e "\n${YELLOW}Step 2: Starting container...${NC}"
 docker run -d \
     --name $CONTAINER_NAME \
-    -p $PORT:7860 \
+    -p $PORT:8000 \
     -e SERVE_FRONTEND=true \
     	robothub-transport-server || {
     echo -e "${RED}❌ Failed to start container${NC}"
@@ -156,6 +156,6 @@ echo "🌐 Access the application at: http://localhost:$PORT"
 echo "📚 API docs available at: http://localhost:$PORT/api/docs"
 echo ""
 echo "To manually test:"
-echo "  docker run -p 7860:7860 -e SERVE_FRONTEND=true robothub-transport-server"
+echo "  docker run -p 8000:8000 -e SERVE_FRONTEND=true robothub-transport-server"
 echo ""
 echo -e "${YELLOW}Container will be cleaned up automatically.${NC}" 

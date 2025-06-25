@@ -39,7 +39,7 @@ export class VideoConsumer extends VideoClientCore {
   private iceCandidateQueue: { candidate: RTCIceCandidate; fromProducer: string }[] = [];
   private hasRemoteDescription = false;
 
-  constructor(baseUrl = 'http://localhost:8000', options: ClientOptions = {}) {
+  constructor(baseUrl: string, options: ClientOptions = {}) {
     super(baseUrl, options);
   }
 
@@ -393,7 +393,7 @@ export class VideoConsumer extends VideoClientCore {
   static async createAndConnect(
     workspaceId: string,
     roomId: string,
-    baseUrl = 'http://localhost:8000',
+    baseUrl: string,
     participantId?: string
   ): Promise<VideoConsumer> {
     const consumer = new VideoConsumer(baseUrl);

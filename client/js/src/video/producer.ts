@@ -20,7 +20,7 @@ export class VideoProducer extends VideoClientCore {
   // Multiple peer connections - one per consumer
   private consumerConnections: Map<string, RTCPeerConnection> = new Map();
 
-  constructor(baseUrl = 'http://localhost:8000', options: ClientOptions = {}) {
+  constructor(baseUrl: string, options: ClientOptions = {}) {
     super(baseUrl, options);
   }
 
@@ -413,7 +413,7 @@ export class VideoProducer extends VideoClientCore {
    * Create a room and automatically connect as producer
    */
   static async createAndConnect(
-    baseUrl = 'http://localhost:8000',
+    baseUrl: string,
     workspaceId?: string,
     roomId?: string,
     participantId?: string

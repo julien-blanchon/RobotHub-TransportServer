@@ -38,7 +38,7 @@ export class RoboticsClientCore extends EventEmitter {
   protected onConnectedCallback: ConnectedCallback | null = null;
   protected onDisconnectedCallback: DisconnectedCallback | null = null;
 
-  constructor(baseUrl = 'http://localhost:8000', options: ClientOptions = {}) {
+  constructor(baseUrl: string, options: ClientOptions = {}) {
     super();
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.apiBase = `${this.baseUrl}/robotics`;

@@ -9,7 +9,7 @@ from .types import ClientOptions, ParticipantRole
 
 def create_client(
     role: ParticipantRole,
-    base_url: str = "http://localhost:8000",
+    base_url: str,
     options: ClientOptions | None = None,
 ) -> "VideoProducer | VideoConsumer":
     """Factory function to create the appropriate client based on role"""
@@ -22,7 +22,7 @@ def create_client(
 
 
 async def create_producer_client(
-    base_url: str = "http://localhost:8000",
+    base_url: str,
     workspace_id: str | None = None,
     room_id: str | None = None,
     participant_id: str | None = None,
@@ -44,7 +44,7 @@ async def create_producer_client(
 async def create_consumer_client(
     workspace_id: str,
     room_id: str,
-    base_url: str = "http://localhost:8000",
+    base_url: str,
     participant_id: str | None = None,
     options: ClientOptions | None = None,
 ) -> VideoConsumer:

@@ -188,7 +188,7 @@ class VideoProducer(VideoClientCore):
 
     def __init__(
         self,
-        base_url: str = "http://localhost:8000",
+        base_url: str,
         options: ClientOptions | None = None,
     ):
         super().__init__(base_url, options)
@@ -699,7 +699,7 @@ class VideoProducer(VideoClientCore):
 
     @staticmethod
     async def create_and_connect(
-        base_url: str = "http://localhost:8000",
+        base_url: str,
         workspace_id: str | None = None,
         room_id: str | None = None,
         participant_id: str | None = None,

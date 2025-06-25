@@ -52,7 +52,7 @@ class VideoClientCore:
 
     def __init__(
         self,
-        base_url: str = "http://localhost:8000",
+        base_url: str,
         options: ClientOptions | None = None,
     ):
         self.base_url = base_url.rstrip("/")

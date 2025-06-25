@@ -3,6 +3,7 @@
 	import { robotics } from '@robothub/transport-server-client';
 	import type { robotics as roboticsTypes } from '@robothub/transport-server-client';
 	import { goto } from '$app/navigation';
+	import { settings } from '$lib/settings.svelte';
 
 	// Server status
 	let serverStatus = $state<'checking' | 'connected' | 'error'>('checking');
@@ -30,7 +31,7 @@
 
 		try {
 			// Use the configured server URL
-			const client = new robotics.RoboticsClientCore('https://blanchon-robothub-transportserver.hf.space/api');
+			const client = new robotics.RoboticsClientCore(settings.transportServerUrl);
 			const roomList = await client.listRooms('');
 			rooms = roomList;
 			serverInfo = { rooms: roomList.length, version: '1.0.0' };
@@ -136,6 +137,9 @@
 		</p>
 		<p class="mt-1 font-mono text-sm text-gray-500">
 			Select or create a workspace to get started
+		</p>
+		<p class="mt-1 font-mono text-sm text-gray-500">
+			Transport server URL: {settings.transportServerUrl}
 		</p>
 	</div>
 

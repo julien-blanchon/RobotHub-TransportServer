@@ -11,7 +11,7 @@ import type { ParticipantRole, ClientOptions } from './types.js';
  */
 export function createClient(
   role: ParticipantRole,
-  baseUrl = 'http://localhost:8000',
+  baseUrl: string,
   options: ClientOptions = {}
 ): RoboticsProducer | RoboticsConsumer {
   if (role === 'producer') {
@@ -27,7 +27,7 @@ export function createClient(
  * Create and connect a producer client
  */
 export async function createProducerClient(
-  baseUrl = 'http://localhost:8000',
+  baseUrl: string,
   workspaceId?: string,
   roomId?: string,
   participantId?: string,
@@ -51,7 +51,7 @@ export async function createProducerClient(
 export async function createConsumerClient(
   workspaceId: string,
   roomId: string,
-  baseUrl = 'http://localhost:8000',
+  baseUrl: string,
   participantId?: string,
   options: ClientOptions = {}
 ): Promise<RoboticsConsumer> {

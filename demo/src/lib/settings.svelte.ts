@@ -5,5 +5,5 @@ interface Settings {
 }
 
 export const settings: Settings = $state({
-	transportServerUrl: env.PUBLIC_TRANSPORT_SERVER_URL ?? 'http://localhost:8000'
+	transportServerUrl: env.PUBLIC_TRANSPORT_SERVER_URL ?? 'https://blanchon-robothub-transportserver.hf.space/api'
 });

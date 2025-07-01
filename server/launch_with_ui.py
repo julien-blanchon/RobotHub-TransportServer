@@ -14,7 +14,7 @@ from src.api import app as api_app
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(), logging.FileHandler("server.log")],
+    handlers=[logging.StreamHandler()],
 )
 
 logger = logging.getLogger(__name__)

@@ -111,6 +111,7 @@ async def send_command(workspace_id: str, room_id: str, command: JointCommand):
 async def get_status():
     """Get system status"""
     stats = robotics_core.get_connection_stats()
+    cleanup_info = robotics_core.get_cleanup_status()
     return {
         "service": "robotics",
         "status": "active",
@@ -120,6 +121,11 @@ async def get_status():
         "version": "2.0.0",
         "supported_roles": [role.value for role in ParticipantRole],
         "supported_robot_types": ["so-arm100", "generic"],
+        "cleanup": {
+            "enabled": cleanup_info["cleanup_enabled"],
+            "inactivity_timeout_hours": cleanup_info["inactivity_timeout_minutes"] / 60,
+            "cleanup_interval_minutes": cleanup_info["cleanup_interval_minutes"],
+        },
     }
 
 
@@ -127,6 +133,20 @@ async def get_status():
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "robotics"}
+
+
+@robotics_router.get("/cleanup/status")
+async def get_cleanup_status():
+    """Get cleanup system status and room information"""
+    status = robotics_core.get_cleanup_status()
+    return {"success": True, "cleanup_status": status}
+
+
+@robotics_router.post("/cleanup/manual")
+async def trigger_manual_cleanup():
+    """Manually trigger room cleanup"""
+    result = await robotics_core.manual_cleanup()
+    return {"success": True, "cleanup_result": result}
 
 
 # ============= WEBSOCKET ENDPOINT =============

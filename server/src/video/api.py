@@ -145,6 +145,7 @@ async def get_status():
     """Get video service status"""
     total_workspaces = len(video_core.workspaces)
     total_rooms = sum(len(rooms) for rooms in video_core.workspaces.values())
+    cleanup_info = video_core.get_cleanup_status()
 
     return {
         "service": "video",
@@ -157,6 +158,11 @@ async def get_status():
         "supported_roles": [role.value for role in ParticipantRole],
         "supported_encodings": [encoding.value for encoding in VideoEncoding],
         "recovery_policies": [policy.value for policy in RecoveryPolicy],
+        "cleanup": {
+            "enabled": cleanup_info["cleanup_enabled"],
+            "inactivity_timeout_hours": cleanup_info["inactivity_timeout_minutes"] / 60,
+            "cleanup_interval_minutes": cleanup_info["cleanup_interval_minutes"],
+        },
     }
 
 
@@ -164,6 +170,20 @@ async def get_status():
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "video"}
+
+
+@video_router.get("/cleanup/status")
+async def get_cleanup_status():
+    """Get cleanup system status and room information"""
+    status = video_core.get_cleanup_status()
+    return {"success": True, "cleanup_status": status}
+
+
+@video_router.post("/cleanup/manual")
+async def trigger_manual_cleanup():
+    """Manually trigger room cleanup"""
+    result = await video_core.manual_cleanup()
+    return {"success": True, "cleanup_result": result}
 
 
 @video_router.get("/")
@@ -181,5 +201,7 @@ async def video_status():
             "/video/workspaces/{workspace_id}/rooms/{room_id}/webrtc/signal - WebRTC signaling",
             "/video/workspaces/{workspace_id}/rooms/{room_id}/ws - WebSocket connection",
             "/video/status - Service status",
+            "/video/cleanup/status - Cleanup system status",
+            "/video/cleanup/manual - Manual cleanup trigger",
         ],
     }

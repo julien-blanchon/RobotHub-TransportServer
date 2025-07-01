@@ -1,13 +1,6 @@
 # Stage 1: Build frontend with Bun (client library + demo)
 FROM oven/bun:1-alpine AS frontend-builder
 
-# Build argument for transport server URL
-ARG PUBLIC_TRANSPORT_SERVER_URL=https://blanchon-robothub-transportserver.hf.space/api
-ENV PUBLIC_TRANSPORT_SERVER_URL=${PUBLIC_TRANSPORT_SERVER_URL}
-
-ARG PORT=8000
-ENV PORT=${PORT}
-
 WORKDIR /app
 
 # Install git for dependencies that might need it
@@ -112,6 +105,13 @@ WORKDIR /app
 
 # Add virtual environment to PATH
 ENV PATH="/app/server/.venv/bin:$PATH"
+
+# Build argument for transport server URL
+ARG PUBLIC_TRANSPORT_SERVER_URL=https://blanchon-robothub-transportserver.hf.space/api
+ENV PUBLIC_TRANSPORT_SERVER_URL=${PUBLIC_TRANSPORT_SERVER_URL}
+
+ARG PORT=8000
+ENV PORT=${PORT}
 
 # Expose the configured port (default 8000)
 EXPOSE ${PORT}

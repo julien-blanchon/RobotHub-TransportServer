@@ -1,7 +1,7 @@
 import json
 import logging
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from fastapi import WebSocket, WebSocketDisconnect
 from typing_extensions import TypedDict
@@ -40,6 +40,10 @@ class RoboticsRoom:
         # State
         self.joints: dict[str, float] = {}
 
+        # Activity tracking
+        self.created_at = datetime.now(tz=UTC)
+        self.last_activity = datetime.now(tz=UTC)
+
 
 class RoboticsCore:
     """Core robotics system - simplified and merged with workspace support"""
@@ -51,6 +55,83 @@ class RoboticsCore:
         self.connection_metadata: dict[
             str, ConnectionMetadata
         ] = {}  # participant_id -> metadata
+
+        # Cleanup configuration
+        self.inactivity_timeout = timedelta(hours=1)  # 1 hour of inactivity
+        self.cleanup_interval = timedelta(minutes=15)  # Check every 15 minutes
+
+        # Start cleanup task
+        self._cleanup_task = None
+        self._start_cleanup_task()
+
+    def _start_cleanup_task(self):
+        """Start the background cleanup task"""
+        import asyncio
+
+        async def cleanup_loop():
+            while True:
+                try:
+                    await asyncio.sleep(self.cleanup_interval.total_seconds())
+                    await self._cleanup_inactive_rooms()
+                except Exception:
+                    logger.exception("Error in cleanup task")
+
+        try:
+            loop = asyncio.get_event_loop()
+            self._cleanup_task = loop.create_task(cleanup_loop())
+            logger.info("Started robotics room cleanup task")
+        except RuntimeError:
+            # No event loop running yet, cleanup will start when first room is created
+            logger.info("No event loop running, cleanup task will start later")
+
+    async def _cleanup_inactive_rooms(self):
+        """Remove rooms that have been inactive for more than the timeout period"""
+        current_time = datetime.now(tz=UTC)
+        rooms_to_remove = []
+
+        for workspace_id, rooms in self.workspaces.items():
+            for room_id, room in rooms.items():
+                # Check if room has any active connections
+                has_active_connections = False
+                room_last_activity = room.last_activity
+
+                # Check all connections for this room to find most recent activity
+                for metadata in self.connection_metadata.values():
+                    if (
+                        metadata["workspace_id"] == workspace_id
+                        and metadata["room_id"] == room_id
+                    ):
+                        has_active_connections = True
+                        room_last_activity = max(
+                            room_last_activity, metadata["last_activity"]
+                        )
+
+                # If no active connections, use room's last activity
+                if not has_active_connections:
+                    time_since_activity = current_time - room_last_activity
+
+                    if time_since_activity > self.inactivity_timeout:
+                        rooms_to_remove.append((workspace_id, room_id))
+                        logger.info(
+                            f"Marking room {room_id} in workspace {workspace_id} for cleanup "
+                            f"(inactive for {time_since_activity})"
+                        )
+
+        # Remove inactive rooms
+        for workspace_id, room_id in rooms_to_remove:
+            if self.delete_room(workspace_id, room_id):
+                logger.info(
+                    f"Auto-removed inactive room {room_id} from workspace {workspace_id}"
+                )
+
+        if rooms_to_remove:
+            logger.info(f"Cleaned up {len(rooms_to_remove)} inactive robotics rooms")
+
+    def _update_room_activity(self, workspace_id: str, room_id: str):
+        """Update the last activity timestamp for a room"""
+        room = self._get_room(workspace_id, room_id)
+        if room:
+            room.last_activity = datetime.now(tz=UTC)
 
     # ============= ROOM MANAGEMENT =============
 
@@ -67,6 +148,10 @@ class RoboticsCore:
 
         room = RoboticsRoom(room_id, workspace_id)
         self.workspaces[workspace_id][room_id] = room
+
+        # Start cleanup task if not already running
+        if self._cleanup_task is None:
+            self._start_cleanup_task()
 
         logger.info(f"Created room {room_id} in workspace {workspace_id}")
         return workspace_id, room_id
@@ -170,6 +255,7 @@ class RoboticsCore:
         if role == ParticipantRole.PRODUCER:
             if room.producer is None:
                 room.producer = participant_id
+                self._update_room_activity(workspace_id, room_id)
                 logger.info(
                     f"Producer {participant_id} joined room {room_id} in workspace {workspace_id}"
                 )
@@ -183,6 +269,7 @@ class RoboticsCore:
         if role == ParticipantRole.CONSUMER:
             if participant_id not in room.consumers:
                 room.consumers.append(participant_id)
+                self._update_room_activity(workspace_id, room_id)
                 logger.info(
                     f"Consumer {participant_id} joined room {room_id} in workspace {workspace_id}"
                 )
@@ -227,6 +314,10 @@ class RoboticsCore:
             if room.joints.get(name) != value:
                 room.joints[name] = value
                 changed_joints.append(joint)
+
+        # Update room activity if there were changes
+        if changed_joints:
+            self._update_room_activity(workspace_id, room_id)
 
         return changed_joints
 
@@ -340,6 +431,9 @@ class RoboticsCore:
                 tz=UTC
             )
             self.connection_metadata[participant_id]["message_count"] += 1
+
+        # Update room activity
+        self._update_room_activity(workspace_id, room_id)
 
         try:
             msg_type = MessageType(message.get("type"))
@@ -612,3 +706,65 @@ class RoboticsCore:
             )
 
         return len(changed_joints)
+
+    # ============= CLEANUP MANAGEMENT =============
+
+    async def manual_cleanup(self) -> dict:
+        """Manually trigger room cleanup and return results"""
+        logger.info("Manual robotics room cleanup triggered")
+        rooms_before = sum(len(rooms) for rooms in self.workspaces.values())
+        await self._cleanup_inactive_rooms()
+        rooms_after = sum(len(rooms) for rooms in self.workspaces.values())
+
+        return {
+            "cleanup_triggered": True,
+            "rooms_before": rooms_before,
+            "rooms_after": rooms_after,
+            "rooms_removed": rooms_before - rooms_after,
+            "timestamp": datetime.now(tz=UTC).isoformat(),
+        }
+
+    def get_cleanup_status(self) -> dict:
+        """Get cleanup system status and configuration"""
+        current_time = datetime.now(tz=UTC)
+
+        # Calculate room ages and activity
+        room_info = []
+        for workspace_id, rooms in self.workspaces.items():
+            for room_id, room in rooms.items():
+                # Find latest activity for this room
+                latest_activity = room.last_activity
+                for metadata in self.connection_metadata.values():
+                    if (
+                        metadata["workspace_id"] == workspace_id
+                        and metadata["room_id"] == room_id
+                    ):
+                        latest_activity = max(
+                            latest_activity, metadata["last_activity"]
+                        )
+
+                age = current_time - room.created_at
+                inactivity = current_time - latest_activity
+
+                room_info.append({
+                    "workspace_id": workspace_id,
+                    "room_id": room_id,
+                    "age_minutes": age.total_seconds() / 60,
+                    "inactivity_minutes": inactivity.total_seconds() / 60,
+                    "has_connections": any(
+                        metadata["workspace_id"] == workspace_id
+                        and metadata["room_id"] == room_id
+                        for metadata in self.connection_metadata.values()
+                    ),
+                    "will_be_cleaned": inactivity > self.inactivity_timeout,
+                })
+
+        return {
+            "service": "robotics",
+            "cleanup_enabled": self._cleanup_task is not None,
+            "inactivity_timeout_minutes": self.inactivity_timeout.total_seconds() / 60,
+            "cleanup_interval_minutes": self.cleanup_interval.total_seconds() / 60,
+            "total_rooms": len(room_info),
+            "rooms": room_info,
+            "timestamp": current_time.isoformat(),
+        }

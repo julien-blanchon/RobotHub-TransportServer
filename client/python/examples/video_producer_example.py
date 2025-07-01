@@ -3,7 +3,7 @@
 Video Producer Example - Updated for Workspace API
 
 Demonstrates how to use the RobotHub TransportServer Python video client for streaming.
-This example creates animated video content and streams it to the arena server.
+This example creates animated video content and streams it to the robot hub tranport server.
 """
 
 import asyncio
